@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/New_Website/birdview-website/app/products/medical/layout.tsx"],"sourcesContent":["export default function AboutLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <section className=\"w-full px-6 md:px-12 lg:px-24\">{children}</section>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,YAAY,EAAE,QAAQ,EAAiC;IAC7E,qBACE,8OAAC;QAAQ,WAAU;kBAAiC;;;;;;AAExD","debugId":null}}]
+}
