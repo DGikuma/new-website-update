@@ -1,12 +1,1 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/contact-us/page": "app/contact-us/page.js",
-  "/forms/JobApplicationForm/page": "app/forms/JobApplicationForm/page.js",
-  "/forms/KenyansInNorthWalesMemberForm/page": "app/forms/KenyansInNorthWalesMemberForm/page.js",
-  "/forms/LastExpenseClaimForm/page": "app/forms/LastExpenseClaimForm/page.js",
-  "/forms/PersonalAccidentClaimForm/page": "app/forms/PersonalAccidentClaimForm/page.js",
-  "/forms/RequestForm/page": "app/forms/RequestForm/page.js",
-  "/forms/StaffMedicalForm/page": "app/forms/StaffMedicalForm/page.js",
-  "/forms/claims/page": "app/forms/claims/page.js",
-  "/page": "app/page.js"
-}
+{}
