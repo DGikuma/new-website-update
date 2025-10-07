@@ -3,7 +3,7 @@
 import { Card, CardHeader, CardBody, Button, Badge } from "@heroui/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Briefcase, GraduationCap } from "lucide-react";
+import { Briefcase, GraduationCap, PenLine } from "lucide-react";
 
 export default function CareersPage() {
     const fadeUp = {
@@ -84,7 +84,7 @@ export default function CareersPage() {
     ];
 
     return (
-        <main className="relative min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 overflow-hidden">
+        <main className="relative w-screen min-h-screen overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
             {/* ✨ Animated Hybrid Background */}
             <svg
                 className="absolute inset-0 -z-10 w-full h-full opacity-[0.15]"
@@ -103,8 +103,16 @@ export default function CareersPage() {
             </svg>
 
             {/* 🌟 Hero Section */}
-            <section className="relative h-[50vh] flex flex-col items-center justify-center text-center bg-[url('/images/careers-hero.jpg')] bg-cover bg-center">
+            <section className="relative w-full h-[60vh] flex flex-col items-center justify-center text-center bg-[url('/images/career-hero.png')] bg-cover bg-center">
                 <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+
+                {/* Beam Overlay */}
+                <motion.div
+                    className="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-danger/30 opacity-50 blur-3xl"
+                    animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                />
+
                 <motion.h1
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -137,7 +145,7 @@ export default function CareersPage() {
                             whileInView="visible"
                             custom={i}
                         >
-                            <Card className="p-6 text-center border border-gray-200/60 dark:border-gray-800 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl shadow-lg hover:shadow-2xl rounded-2xl transition-all duration-300">
+                            <Card className="flex flex-col justify-between h-full p-8 text-center border border-gray-200/60 dark:border-gray-800 bg-white/80 dark:bg-gray-800/70 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] rounded-2xl transition-all duration-500">
                                 <CardHeader className="flex flex-col items-center">
                                     <Image
                                         src={r.icon}
@@ -193,8 +201,49 @@ export default function CareersPage() {
                                         <p className="text-gray-600 dark:text-gray-300 text-sm mb-6">
                                             {job.summary}
                                         </p>
-                                        <Button color="primary" variant="solid" className="rounded-full w-full">
-                                            Apply Now
+                                        <Button
+                                            color="primary"
+                                            variant="solid"
+                                            className="group relative overflow-hidden rounded-full w-full text-white font-semibold transition-all duration-500 ease-out
+                 before:absolute before:inset-0 before:bg-gradient-to-r before:from-danger before:to-danger before:z-0
+                 before:translate-x-[-100%] before:transition-transform before:duration-500 group-hover:before:translate-x-0
+                 after:absolute after:inset-0 after:bg-gradient-to-r after:from-primary after:to-primary after:z-0
+                 after:translate-x-0 after:transition-transform after:duration-500 group-hover:after:translate-x-[100%]"
+                                        >
+                                            <span className="relative z-10 flex items-center justify-center gap-2">
+                                                <motion.span
+                                                    initial={{ x: 0 }}
+                                                    whileHover={{ x: 4 }}
+                                                    transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                                                    className="tracking-wide"
+                                                >
+                                                    Apply Now
+                                                </motion.span>
+
+                                                {/* Animated Icon */}
+                                                <motion.div
+                                                    initial={{ rotate: 0, scale: 1 }}
+                                                    whileHover={{
+                                                        rotate: [0, -12, 12, 0],
+                                                        scale: 1.15,
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.8,
+                                                        ease: "easeInOut",
+                                                        repeat: Infinity,
+                                                        repeatDelay: 2,
+                                                    }}
+                                                    className="relative"
+                                                >
+                                                    <PenLine className="w-5 h-5 text-white" />
+                                                    {/* Elegant Glow Effect */}
+                                                    <motion.div
+                                                        className="absolute inset-0 rounded-full bg-white/40 blur-sm"
+                                                        animate={{ opacity: [0, 1, 0], scale: [1, 1.2, 1] }}
+                                                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                                                    />
+                                                </motion.div>
+                                            </span>
                                         </Button>
                                     </CardBody>
                                 </Card>
@@ -224,7 +273,7 @@ export default function CareersPage() {
                             whileInView="visible"
                             custom={i}
                         >
-                            <Card className="p-6 text-center border border-gray-200/60 dark:border-gray-800 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl shadow-lg hover:shadow-2xl rounded-2xl transition-all duration-300">
+                            <Card className="flex flex-col justify-between h-full p-8 text-center border border-gray-200/60 dark:border-gray-800 bg-white/80 dark:bg-gray-800/70 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] rounded-2xl transition-all duration-500">
                                 <CardHeader>
                                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                                         {intern.title}
@@ -238,12 +287,49 @@ export default function CareersPage() {
                                         {intern.description}
                                     </p>
                                     <Button
-                                        color="secondary"
-                                        variant="flat"
-                                        className="rounded-full"
+                                        color="danger"
+                                        variant="solid"
+                                        className="relative overflow-hidden rounded-full w-full font-semibold text-white transition-all duration-500 ease-out
+                                                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-danger before:to-danger before:z-0
+                                                    before:translate-x-[-100%] before:transition-transform before:duration-500 hover:before:translate-x-0
+                                                    after:absolute after:inset-0 after:bg-gradient-to-r after:from-primary after:to-primary after:z-0
+                                                    after:translate-x-0 after:transition-transform after:duration-500 hover:after:translate-x-[100%]"
                                     >
-                                        Apply for Internship
+                                        <span className="relative z-10 flex items-center justify-center gap-2">
+                                            <motion.span
+                                                initial={{ x: 0 }}
+                                                whileHover={{ x: 4 }}
+                                                transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                                            >
+                                                Apply for Internship
+                                            </motion.span>
+
+                                            {/* Animated Icon */}
+                                            <motion.div
+                                                initial={{ y: 0, rotate: 0 }}
+                                                whileHover={{
+                                                    y: [-1, 2, -1],
+                                                    rotate: [0, -10, 10, 0],
+                                                }}
+                                                transition={{
+                                                    duration: 1.2,
+                                                    ease: "easeInOut",
+                                                    repeat: Infinity,
+                                                    repeatDelay: 1.5,
+                                                }}
+                                                className="relative"
+                                            >
+                                                <GraduationCap className="w-5 h-5 text-white" />
+                                                {/* Elegant glow highlight */}
+                                                <motion.div
+                                                    className="absolute inset-0 rounded-full bg-white/40 blur-sm"
+                                                    animate={{ opacity: [0, 1, 0], scale: [1, 1.2, 1] }}
+                                                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                                                />
+                                            </motion.div>
+                                        </span>
                                     </Button>
+
                                 </CardBody>
                             </Card>
                         </motion.div>
@@ -256,15 +342,43 @@ export default function CareersPage() {
                         Ready to take the next step? Join a team that’s transforming the future of insurance.
                     </p>
                     <Button
-                        color="primary"
+                        color="danger"
                         variant="solid"
                         size="lg"
-                        className="rounded-full"
+                        className="group relative overflow-hidden rounded-full text-white font-semibold px-8 transition-all duration-500 ease-out
+                 before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary before:to-primary before:z-0
+                 before:translate-x-[-100%] before:transition-transform before:duration-500 group-hover:before:translate-x-0
+                 after:absolute after:inset-0 after:bg-gradient-to-r after:from-danger after:to-danger after:z-0
+                 after:translate-x-0 after:transition-transform after:duration-500 group-hover:after:translate-x-[100%]"
                     >
-                        View All Careers
+                        <span className="relative z-10 flex items-center gap-2">
+                            <motion.span
+                                initial={{ x: 0 }}
+                                whileHover={{ x: 4 }}
+                                transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                            >
+                                View All Careers
+                            </motion.span>
+                            <motion.div
+                                initial={{ rotate: 0, scale: 1 }}
+                                whileHover={{
+                                    rotate: [0, 10, -10, 0],
+                                    scale: 1.1,
+                                }}
+                                transition={{
+                                    duration: 0.6,
+                                    ease: "easeInOut",
+                                    repeat: Infinity,
+                                    repeatDelay: 2,
+                                }}
+                            >
+                                <Briefcase className="w-5 h-5 text-white" />
+                            </motion.div>
+                        </span>
                     </Button>
+
                 </div>
             </motion.section>
-        </main>
+        </main >
     );
 }
