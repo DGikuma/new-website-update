@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/New_Website/birdview-website/app/forms/layout.tsx"],"sourcesContent":["\"use client\";\r\n\r\nimport React from \"react\";\r\nimport { ToastProvider } from \"@heroui/react\";\r\n\r\nexport default function FormsLayout({ children }: { children: React.ReactNode }) {\r\n    return (\r\n        <ToastProvider placement=\"top-end\">\r\n            <section className=\"w-full px-6 md:px-12 lg:px-24\">\r\n                {children}\r\n            </section>\r\n        </ToastProvider>\r\n    );\r\n}\r\n"],"names":[],"mappings":";;;;;AAGA;AAHA;;;AAKe,SAAS,YAAY,EAAE,QAAQ,EAAiC;IAC3E,qBACI,8OAAC,gLAAa;QAAC,WAAU;kBACrB,cAAA,8OAAC;YAAQ,WAAU;sBACd;;;;;;;;;;;AAIjB","debugId":null}}]
-}

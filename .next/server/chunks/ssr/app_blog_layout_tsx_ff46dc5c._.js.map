@@ -2,5 +2,5 @@
   "version": 3,
   "sources": [],
   "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/New_Website/birdview-website/app/blog/layout.tsx"],"sourcesContent":["export default function BlogLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <section className=\"w-full px-6 md:px-12 lg:px-24 \">{children}</section>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,WAAW,EAAE,QAAQ,EAAiC;IAC5E,qBACE,8OAAC;QAAQ,WAAU;kBAAkC;;;;;;AAEzD","debugId":null}}]
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/New_Website/birdview-website/app/blog/layout.tsx"],"sourcesContent":["export default function BlogLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <section className=\"w-full px-6 md:px-12 lg:px-24 \">\n      {children}\n    </section>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,WAAW,EAAE,QAAQ,EAAiC;IAC5E,qBACE,8OAAC;QAAQ,WAAU;kBAChB;;;;;;AAGP","debugId":null}}]
 }

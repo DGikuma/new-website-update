@@ -168,12 +168,9 @@ export default function Blog() {
   const remainingPosts = posts.slice(6);
 
   return (
-    <main className="relative min-h-screen px-6 py-20 bg-gray-50">
+    <main className="relative min-h-screen px-6 py-20 bg-pr">
       {/* Corporate Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center "
-        style={{ backgroundImage: "url('/background/bg3.jpg')" }}
-      ></div>
+
 
       <h1 className="text-5xl font-bold text-center text-white mb-12 relative z-10">
         Blog & Insights

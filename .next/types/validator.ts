@@ -324,10 +324,37 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../app/media/media_enquiry/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/media/media_enquiry">> = Specific
+  const handler = {} as typeof import("../../app/media/media_enquiry/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/media/news/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/media/news">> = Specific
+  const handler = {} as typeof import("../../app/media/news/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/">> = Specific
   const handler = {} as typeof import("../../app/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/pictorial/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/pictorial">> = Specific
+  const handler = {} as typeof import("../../app/pictorial/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
@@ -460,6 +487,24 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 {
   type __IsExpected<Specific extends LayoutConfig<"/">> = Specific
   const handler = {} as typeof import("../../app/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/media/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/media">> = Specific
+  const handler = {} as typeof import("../../app/media/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/pictorial/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/pictorial">> = Specific
+  const handler = {} as typeof import("../../app/pictorial/layout.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
