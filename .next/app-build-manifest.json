@@ -22,7 +22,7 @@
       "static/chunks/_a0ff3932._.js",
       "static/chunks/turbopack-_3fb52da9._.js"
     ],
-    "/blog/[slug]/page": [
+    "/careers/page": [
       "static/chunks/[root-of-the-server]__07ef1d96._.css",
       "static/chunks/node_modules_@heroui_dom-animation_dist_index_mjs_0a528023._.js",
       "static/chunks/_7eaae3da._.js",
@@ -35,9 +35,8 @@
       "static/chunks/app_error_tsx_059b41a8._.js",
       "static/chunks/app_error_tsx_f2e36281._.js",
       "static/chunks/node_modules_next_dist_client_components_builtin_global-error_f2e36281.js",
-      "static/chunks/node_modules_ab4db034._.js",
-      "static/chunks/app_blog_403459c3._.js",
-      "static/chunks/app_blog_[slug]_page_tsx_f2e36281._.js",
+      "static/chunks/_13dd3082._.js",
+      "static/chunks/app_careers_page_tsx_f2e36281._.js",
       "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_4e3b0bdd._.js",
       "static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
       "static/chunks/node_modules_next_dist_compiled_next-devtools_index_a9cb0712.js",
@@ -48,7 +47,7 @@
       "static/chunks/_a0ff3932._.js",
       "static/chunks/turbopack-_3fb52da9._.js"
     ],
-    "/blog/page": [
+    "/contact-us/page": [
       "static/chunks/[root-of-the-server]__07ef1d96._.css",
       "static/chunks/node_modules_@heroui_dom-animation_dist_index_mjs_0a528023._.js",
       "static/chunks/_7eaae3da._.js",
@@ -61,8 +60,10 @@
       "static/chunks/app_error_tsx_059b41a8._.js",
       "static/chunks/app_error_tsx_f2e36281._.js",
       "static/chunks/node_modules_next_dist_client_components_builtin_global-error_f2e36281.js",
-      "static/chunks/_e69d041e._.js",
-      "static/chunks/app_blog_page_tsx_f2e36281._.js",
+      "static/chunks/node_modules_@heroui_dom-animation_dist_index_mjs_7584ab64._.js",
+      "static/chunks/node_modules_8cd95a28._.js",
+      "static/chunks/app_contact-us_page_tsx_f8a57c46._.js",
+      "static/chunks/app_contact-us_page_tsx_f2e36281._.js",
       "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_4e3b0bdd._.js",
       "static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
       "static/chunks/node_modules_next_dist_compiled_next-devtools_index_a9cb0712.js",
@@ -99,7 +100,7 @@
       "static/chunks/_a0ff3932._.js",
       "static/chunks/turbopack-_3fb52da9._.js"
     ],
-    "/page": [
+    "/our-culture/page": [
       "static/chunks/[root-of-the-server]__07ef1d96._.css",
       "static/chunks/node_modules_@heroui_dom-animation_dist_index_mjs_0a528023._.js",
       "static/chunks/_7eaae3da._.js",
@@ -112,10 +113,8 @@
       "static/chunks/app_error_tsx_059b41a8._.js",
       "static/chunks/app_error_tsx_f2e36281._.js",
       "static/chunks/node_modules_next_dist_client_components_builtin_global-error_f2e36281.js",
-      "static/chunks/node_modules_@heroui_dom-animation_dist_index_mjs_a6ca9147._.js",
-      "static/chunks/node_modules_7ef7dbd4._.js",
-      "static/chunks/_d2fec8aa._.js",
-      "static/chunks/app_page_tsx_f2e36281._.js",
+      "static/chunks/_0aae8eca._.js",
+      "static/chunks/app_our-culture_page_tsx_f2e36281._.js",
       "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_4e3b0bdd._.js",
       "static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
       "static/chunks/node_modules_next_dist_compiled_next-devtools_index_a9cb0712.js",
@@ -126,7 +125,7 @@
       "static/chunks/_a0ff3932._.js",
       "static/chunks/turbopack-_3fb52da9._.js"
     ],
-    "/products/last_expense/page": [
+    "/our-leadership/page": [
       "static/chunks/[root-of-the-server]__07ef1d96._.css",
       "static/chunks/node_modules_@heroui_dom-animation_dist_index_mjs_0a528023._.js",
       "static/chunks/_7eaae3da._.js",
@@ -139,12 +138,8 @@
       "static/chunks/app_error_tsx_059b41a8._.js",
       "static/chunks/app_error_tsx_f2e36281._.js",
       "static/chunks/node_modules_next_dist_client_components_builtin_global-error_f2e36281.js",
-      "static/chunks/node_modules_@heroui_dom-animation_dist_index_mjs_24e096d3._.js",
-      "static/chunks/node_modules_axios_lib_99e19c7d._.js",
-      "static/chunks/node_modules_@react-spring_core_dist_react-spring_core_modern_mjs_6c051fc7._.js",
-      "static/chunks/node_modules_eb36d2f2._.js",
-      "static/chunks/_f03d03df._.js",
-      "static/chunks/app_products_last_expense_page_tsx_f2e36281._.js",
+      "static/chunks/_832ad90a._.js",
+      "static/chunks/app_our-leadership_page_tsx_f2e36281._.js",
       "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_4e3b0bdd._.js",
       "static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
       "static/chunks/node_modules_next_dist_compiled_next-devtools_index_a9cb0712.js",

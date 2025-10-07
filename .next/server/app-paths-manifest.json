@@ -1,8 +1,8 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/blog/[slug]/page": "app/blog/[slug]/page.js",
-  "/blog/page": "app/blog/page.js",
+  "/careers/page": "app/careers/page.js",
+  "/contact-us/page": "app/contact-us/page.js",
   "/media/news/page": "app/media/news/page.js",
-  "/page": "app/page.js",
-  "/products/last_expense/page": "app/products/last_expense/page.js"
+  "/our-culture/page": "app/our-culture/page.js",
+  "/our-leadership/page": "app/our-leadership/page.js"
 }

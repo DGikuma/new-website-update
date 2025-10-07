@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/New_Website/birdview-website/app/careers/layout.tsx"],"sourcesContent":["export default function CareersLayout({ children }: { children: React.ReactNode }) {\r\n    return (\r\n        <section className=\"w-full px-6 md:px-12 lg:px-24\">{children}</section>\r\n    );\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,cAAc,EAAE,QAAQ,EAAiC;IAC7E,qBACI,8OAAC;QAAQ,WAAU;kBAAiC;;;;;;AAE5D","debugId":null}}]
+}
