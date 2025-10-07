@@ -59,3 +59,4 @@ jest.setup.js
 *.seed
 *.tgz
 *.orig
+".next/" 
