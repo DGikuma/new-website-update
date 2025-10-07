@@ -1,1 +1,61 @@
-node_modules/ 
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Next.js Build Outputs
+.next/
+out/
+dist/
+build/
+.vercel/
+.cache/
+.next/cache/
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS / Editor Specific
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# TypeScript
+*.tsbuildinfo
+
+tailwind.config.js
+postcss.config.js
+
+# Test Coverage / Reports
+coverage/
+*.lcov
+jest.config.js
+jest.setup.js
+
+# Miscellaneous
+*.env
+*.local
+*.pid
+*.seed
+*.tgz
+*.orig
