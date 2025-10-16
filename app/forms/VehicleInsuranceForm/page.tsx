@@ -1,112 +1,108 @@
-import React, { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Toaster, toast } from "@/components/ui/toaster";
+"use client";
 
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Card,
   CardHeader,
-  CardContent,
-  Divider,
+  CardBody,
   Button,
-  FormControlLabel,
   Checkbox,
-  Typography,
-  Toaster,
   toast,
-  toastTitle,
-} from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import PolicyIcon from "@mui/icons-material/Policy";
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-import Slide from "@mui/material/Slide";
+} from "@heroui/react";
+import { User, FileCheck, Truck } from "lucide-react";
 
-import Step1InsuredDetails from './steps/Step1InsuredDetails';
-import Step2Policy_Vehicle_Details from './steps/Step2Policy_Vehicle_Details';export interface FormdataType {
+import Step1InsuredDetails from "./steps/Step1InsuredDetails";
+import Step2Policy_Vehicle_Details from "./steps/Step2Policy_Vehicle_Details";
+
+export interface FormdataType {
+  [key: string]: any;
 }
 
-export interface SnackType {
-  open: boolean;
-  type: string;
-  message: string;
-  key: number;
-}
-
-
-
-const steps = [
-  'Insured Details',
-  'Policy & Vehicle Details',
-  'Preview & Confirm'
-];
+const steps = ["Insured Details", "Policy & Vehicle Details", "Preview & Confirm"];
 
 const VehicleInsuranceForm: React.FC = () => {
   const [step, setStep] = useState<number>(0);
   const [formData, setFormData] = useState<FormdataType>({});
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Added `key` so Toaster always refreshes
-  const [snack, setSnack] = useState<SnackType>({ open: false, type: '', message: '', key: 0 });
+  // Use toast.* in place of snackbar
+  const showError = (msg: string) =>
+    toast({
+      description: msg,
+      color: "danger",
+      duration: 5000,
+      variant: "solid",
+    });
 
-  const handleNext: React.FC = () => {
-    if (step === 0) {
-      const requiredFields = ['products', 'pinNumber', 'policyHolder', 'eimail'];
+  const showSuccess = (msg: string) =>
+    toast({
+      description: msg,
+      color: "success",
+      duration: 4500,
+      variant: "solid",
+    });
 
-      const missing = requiredFields.some(
-        (key) => !formData[key]?.toString().trim()
-      );
-
-      if (missing) {
-        return setSnack({
-          open: true,
-          type: 'error',
-          message: '❌ Please fill in all required insured details before continuing.',
-          key: new Date().getTime(),
-        });
-      }
+  const validateStep0 = () => {
+    const requiredFields = ["products", "pinNumber", "policyHolder", "eimail"];
+    const missing = requiredFields.some((key) => !String(formData[key] || "").trim());
+    if (missing) {
+      showError("❌ Please fill in all required insured details before continuing.");
+      return false;
     }
-
-    if (step === 1) {
-      const requiredFields = [
-        'registrationNumber',
-        'chasisNo',
-        'coverType',
-        'certificateStartDate',
-        'period',
-        'certificateToDate',
-        'vehicleMake',
-        'yearOfMake',
-        'licenseToCarry',
-        'idCopy',
-        'pinCopy',
-        'logBookOrKraPin'
-      ];
-
-      const missing = requiredFields.some(
-        (key) =>
-          !formData[key] ||
-          (Array.isArray(formData[key]) && formData[key].length === 0)
-      );
-
-      if (missing) {
-        return setSnack({
-          open: true,
-          type: 'error',
-          message: '❌ Please complete all policy & vehicle details (including uploads) before continuing.',
-          key: new Date().getTime(),
-        });
-      }
-    }
-
-    setStep((prev) => Math.min(prev + 1, steps.length - 1));
+    return true;
   };
 
-  const handleBack: React.FC = () => setStep((prev) => Math.max(prev - 1, 0));
+  const validateStep1 = () => {
+    const requiredFields = [
+      "registrationNumber",
+      "chasisNo",
+      "coverType",
+      "certificateStartDate",
+      "period",
+      "certificateToDate",
+      "vehicleMake",
+      "yearOfMake",
+      "licenseToCarry",
+      "idCopy",
+      "pinCopy",
+      "logBookOrKraPin",
+    ];
 
-  const updateFormData: React.FC = (newData) =>
+    const missing = requiredFields.some((key) => {
+      const value = formData[key];
+      if (Array.isArray(value)) return value.length === 0;
+      return !value;
+    });
+
+    if (missing) {
+      showError(
+        "❌ Please complete all policy & vehicle details (including uploads) before continuing."
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleNext = () => {
+    // Step 0 must pass before moving forward
+    if (step === 0) {
+      if (!validateStep0()) return;
+      setStep(1);
+      return;
+    }
+
+    // Step 1 must pass before moving to preview
+    if (step === 1) {
+      if (!validateStep1()) return;
+      setStep(2);
+      return;
+    }
+  };
+
+  const handleBack = () => setStep((s) => Math.max(0, s - 1));
+
+  const updateFormData = (newData: Partial<FormdataType>) =>
     setFormData((prev) => ({ ...prev, ...newData }));
 
   const handleConfirmSubmit = async () => {
@@ -115,61 +111,201 @@ const VehicleInsuranceForm: React.FC = () => {
 
       const data = new FormData();
 
-      // Append regular form fields
+      // append primitive fields
       Object.keys(formData).forEach((key) => {
-        if (!Array.isArray(formData[key])) {
-          data.append(key, formData[key] || "");
+        const val = formData[key];
+        if (!Array.isArray(val)) {
+          data.append(key, val ?? "");
         }
       });
 
-      // Append uploaded files
-      ['idCopy', 'pinCopy', 'logBookOrKraPin'].forEach((field) => {
-        (formData[field] || []).forEach((item) => {
-          if (item.file) {
-            data.append(field, item.file, item.file.name);
-          }
-        });
+      // append file arrays (idCopy, pinCopy, logBookOrKraPin)
+      ["idCopy", "pinCopy", "logBookOrKraPin"].forEach((field) => {
+        const arr = formData[field] || [];
+        if (Array.isArray(arr)) {
+          arr.forEach((it: any) => {
+            if (it?.file) data.append(field, it.file, it.file.name);
+          });
+        }
       });
 
-      const res = await fetch('/api/insurance_form', {
-        method: 'POST',
-        body: data,
-      });
-
+      const res = await fetch("/api/insurance_form", { method: "POST", body: data });
       const result = await res.json();
 
-      if (!res.ok) throw new Error(result.error || 'Submission failed');
+      if (!res.ok) throw new Error(result.error || "Submission failed");
 
-      setSnack({
-        open: true,
-        type: 'success',
-        message: '✅ Form submitted successfully!',
-        key: new Date().getTime(),
-      });
+      showSuccess("✅ Form submitted successfully!");
+      if (result.fileUrl) window.open(result.fileUrl, "_blank");
 
-      if (result.fileUrl) window.open(result.fileUrl, '_blank');
-
-      // Reset form
+      // Reset
       setFormData({});
       setStep(0);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Upload error:", err);
-      setSnack({
-        open: true,
-        type: 'error',
-        message: `❌ ${err.message}`,
-        key: new Date().getTime(),
-      });
+      showError(`❌ ${err?.message || "Submission failed"}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const SlideTransition: React.FC = (props) {
-    return <Slide {...props} direction="left" />;
-  }
+  const renderPreview = () => {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center px-4 
+             bg-[url('/images/backdrop2.png')] bg-cover bg-center bg-no-repeat"
+      >
+        <Card className="shadow-lg border rounded-2xl overflow-visible">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <User className="w-5 h-5 text-sky-600" />
+              <h3 className="text-lg font-semibold">Preview & Confirm</h3>
+            </div>
+          </CardHeader>
 
-  const renderStep: React.FC = () => {
+          <CardBody className="space-y-6 text-sm">
+            {/* Insured Details */}
+            <section>
+              <div className="flex items-center gap-2 text-sky-700 font-semibold mb-2">
+                <User /> Insured Details
+              </div>
+              <div className="space-y-1">
+                <div>
+                  <strong>Products:</strong> {formData.products || "—"}
+                </div>
+                <div>
+                  <strong>PIN Number:</strong> {formData.pinNumber || "—"}
+                </div>
+                <div>
+                  <strong>Policy Holder:</strong> {formData.policyHolder || "—"}
+                </div>
+                <div>
+                  <strong>Email:</strong> {formData.eimail || "—"}
+                </div>
+
+                <div className="mt-2">
+                  <Checkbox
+                    isSelected={Boolean(formData.timeOnRisk)}
+                    onValueChange={(val) => updateFormData({ timeOnRisk: !!val })}
+                  >
+                    Time On Risk
+                  </Checkbox>
+                </div>
+              </div>
+            </section>
+
+            {/* Policy Details */}
+            <section>
+              <div className="flex items-center gap-2 text-sky-700 font-semibold mb-2">
+                <FileCheck /> Policy Details
+              </div>
+              <div className="space-y-1">
+                <div>
+                  <strong>Registration Number:</strong> {formData.registrationNumber || "—"}
+                </div>
+                <div>
+                  <strong>Chasis Number:</strong> {formData.chasisNo || "—"}
+                </div>
+                <div>
+                  <strong>Cover Type:</strong> {formData.coverType || "—"}
+                </div>
+                <div>
+                  <strong>Certificate Start:</strong> {formData.certificateStartDate || "—"}
+                </div>
+                <div>
+                  <strong>Period:</strong> {formData.period || "—"}
+                </div>
+                <div>
+                  <strong>Certificate End:</strong> {formData.certificateToDate || "—"}
+                </div>
+              </div>
+            </section>
+
+            {/* Vehicle Info */}
+            <section>
+              <div className="flex items-center gap-2 text-sky-700 font-semibold mb-2">
+                <Truck /> Vehicle Information
+              </div>
+              <div className="space-y-1">
+                <div>
+                  <strong>Make:</strong> {formData.vehicleMake || "—"}
+                </div>
+                <div>
+                  <strong>Year Of Manufacture:</strong> {formData.yearOfMake || "—"}
+                </div>
+                <div>
+                  <strong>License To Carry:</strong> {formData.licenseToCarry || "—"}
+                </div>
+              </div>
+            </section>
+
+            {/* Uploaded Files */}
+            <section>
+              <div className="flex items-center gap-2 text-sky-700 font-semibold mb-2">📎 Uploaded Files</div>
+
+              {(["idCopy", "pinCopy", "logBookOrKraPin"] as const).map((field, idx) => {
+                const labels = ["ID Copy", "PIN Copy", "Log Book / KRA PIN Copy"];
+                const files = Array.isArray(formData[field]) ? formData[field] : [];
+
+                const removeFile = (index: number) => {
+                  const newFiles = files.filter((_: any, i: number) => i !== index);
+                  updateFormData({ [field]: newFiles });
+                };
+
+                return (
+                  <div key={field} className="mb-4">
+                    <div className="font-medium">{labels[idx]}:</div>
+                    {files.length > 0 ? (
+                      <div className="flex flex-wrap gap-3 mt-2">
+                        {files.map((f: any, i: number) => (
+                          <div key={i} className="relative w-[88px] h-[88px] rounded-md border overflow-hidden bg-gray-50">
+                            {f.preview ? (
+                              // image preview
+                              // note: using `f.preview` if present, else just filename box
+                              // make sure caller sets preview via URL.createObjectURL(file)
+                              // revoke objectURL handled by uploader step
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={f.preview} alt={f.file?.name || "file"} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center p-2 text-xs text-gray-700 text-center">
+                                {f.file?.name || "file"}
+                              </div>
+                            )}
+
+                            <button
+                              type="button"
+                              onClick={() => removeFile(i)}
+                              className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center shadow-md hover:bg-red-700 transition"
+                              title="Remove file"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-gray-500 mt-1">No files attached</div>
+                    )}
+                  </div>
+                );
+              })}
+            </section>
+          </CardBody>
+
+          <div className="flex justify-center items-center px-6 py-4 border-t">
+            <Button
+              onClick={handleConfirmSubmit}
+              disabled={loading}
+              className="bg-gradient-to-r from-emerald-600 to-sky-600 text-white px-6 py-3 rounded-lg shadow-lg"
+            >
+              {loading ? "Submitting..." : "Confirm & Submit"}
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderStep = () => {
     const stepProps = { formData, updateFormData };
 
     switch (step) {
@@ -178,224 +314,55 @@ const VehicleInsuranceForm: React.FC = () => {
       case 1:
         return <Step2Policy_Vehicle_Details {...stepProps} />;
       case 2:
-        return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-      <Card className="w-full max-w-2xl shadow-xl border border-gray-200 rounded-2xl bg-white">
-        <CardContent>
-          <Card className="shadow-lg border rounded-2xl">
-            <CardHeader title="Preview & Confirm" />
-            <Divider />
-
-            <CardContent className="space-y-6 text-sm">
-              {/* Insured Details */}
-              <div>
-                <div className="flex items-center gap-2 text-blue-700 font-semibold mb-2">
-                  <PersonIcon /> Insured Details
-                </div>
-                <Typography>Products: <strong>{formData.products}</strong></Typography>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={Boolean(formData.timeOnRisk)}
-                      onChange={(e) =>
-                        updateFormData({ timeOnRisk: e.target.checked })
-                      }
-                    />
-                  }
-                  label="Time On Risk"
-                />
-                <Typography>PIN Number: <strong>{formData.pinNumber}</strong></Typography>
-                <Typography>Policy Holder: <strong>{formData.policyHolder}</strong></Typography>
-                <Typography>Email Address: <strong>{formData.eimail}</strong></Typography>
-              </div>
-
-              {/* Policy Details */}
-              <div>
-                <div className="flex items-center gap-2 text-blue-700 font-semibold mb-2">
-                  <PolicyIcon /> Policy Details
-                </div>
-                <Typography>Registration Number: <strong>{formData.registrationNumber}</strong></Typography>
-                <Typography>Chasis Number: <strong>{formData.chasisNo}</strong></Typography>
-                <Typography>Cover Type: <strong>{formData.coverType}</strong></Typography>
-                <Typography>Certificate Start Date: <strong>{formData.certificateStartDate}</strong></Typography>
-                <Typography>Period: <strong>{formData.period}</strong></Typography>
-                <Typography>Certificate End Date: <strong>{formData.certificateToDate}</strong></Typography>
-              </div>
-
-              {/* Vehicle Info */}
-              <div>
-                <div className="flex items-center gap-2 text-blue-700 font-semibold mb-2">
-                  <DirectionsCarIcon /> Vehicle Information
-                </div>
-                <Typography>Make: <strong>{formData.vehicleMake}</strong></Typography>
-                <Typography>Year Of Manufacture: <strong>{formData.yearOfMake}</strong></Typography>
-                <Typography>License To Carry: <strong>{formData.licenseToCarry}</strong></Typography>
-              </div>
-
-              {/* Uploaded Files Preview */}
-              <div>
-                <div className="flex items-center gap-2 text-blue-700 font-semibold mb-2">
-                  📎 Uploaded Files
-                </div>
-                {['idCopy', 'pinCopy', 'logBookOrKraPin'].map((field, idx) => {
-                  const labels = ['ID Copy', 'PIN Copy', 'Log Book / KRA PIN Copy'];
-                  const files = Array.isArray(formData[field]) ? formData[field] : [];
-
-                  const removeFile: React.FC = (index) => {
-                    const newFiles = files.filter((_, i) => i !== index);
-                    updateFormData({ [field]: newFiles });
-                  };
-
-                  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-      <Card className="w-full max-w-2xl shadow-xl border border-gray-200 rounded-2xl bg-white">
-        <CardContent>
-                    <div key={field} className="mb-4">
-                      <Typography className="font-medium">{labels[idx]}:</Typography>
-                      {files.length > 0 ? (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {files.map((f, i) => (
-                            <div key={i} className="relative w-[80px] h-[80px]">
-                              {f.preview ? (
-                                <img
-                                  src={f.preview}
-                                  alt={f.file.name}
-                                  className="w-full h-full object-cover rounded-md border"
-                                  onLoad={() => URL.revokeObjectURL(f.preview)}
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-700 bg-gray-100 rounded-md border px-1 text-center">
-                                  {f.file.name}
-                                </div>
-                              )}
-                              {/* Remove Button */}
-                              <button
-                                type="button"
-                                onClick={() => removeFile(i)}
-                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition"
-                                title="Remove file"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <Typography className="text-gray-500 mt-1">No files attached</Typography>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-
-            <Divider />
-            <div className="flex justify-center items-center px-6 py-4">
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleConfirmSubmit}
-                disabled={loading}
-              >
-                {loading ? 'Submitting...' : 'Confirm & Submit'}
-              </Button>
-            </div>
-          </Card>
-        );
+        return renderPreview();
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-      <Card className="w-full max-w-2xl shadow-xl border border-gray-200 rounded-2xl bg-white">
-        <CardContent>
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 via-white to-blue-200 relative overflow-hidden">
-      <div className="absolute inset-0 backdrop-blur-sm bg-white/30" />
-
-      <div className="relative z-10 w-full max-w-4xl">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-8">
+      <div className="relative w-full max-w-4xl">
         <motion.div
           key={step}
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -40 }}
-          transition={{ duration: 0.4 }}
-          className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-gray-200"
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.35 }}
+          className="bg-white/80 backdrop-blur rounded-2xl shadow-2xl p-8 border border-gray-100"
         >
-          <h1 className="text-3xl font-bold mb-4 text-center">
-            Insurance Proposal
-          </h1>
-          <div className="mb-6 text-center text-sm text-gray-600">
-            Step {step + 1} of {steps.length} - {steps[step]}
+          <h1 className="text-3xl font-bold mb-3 text-center">Insurance Proposal</h1>
+          <div className="mb-4 text-center text-sm text-gray-600">
+            Step {step + 1} of {steps.length} — <span className="font-medium">{steps[step]}</span>
           </div>
 
-          {renderStep()}
+          <div>{renderStep()}</div>
 
-          <div className="mt-8 flex justify-between gap-4">
+          <div className="mt-6 flex justify-between items-center gap-3">
             <button
               onClick={handleBack}
               disabled={step === 0 || loading}
-              className="px-4 py-2 rounded-md border bg-white/70 backdrop-blur-md text-gray-800 shadow-sm hover:bg-red-500 hover:text-white disabled:opacity-50"
+              className="px-4 py-2 rounded-md border bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
             >
               ← Previous
             </button>
-            {step < steps.length - 1 && (
-              <button
-                onClick={handleNext}
-                disabled={loading}
-                className="px-4 py-2 rounded-md bg-blue-600 text-white shadow-md hover:bg-blue-700 disabled:opacity-50"
-              >
-                Next →
-              </button>
-            )}
+
+            <div className="flex items-center gap-3">
+              {step < steps.length - 1 && (
+                <button
+                  onClick={handleNext}
+                  disabled={loading}
+                  className="px-5 py-2 rounded-md bg-sky-600 text-white shadow-md hover:bg-sky-700 disabled:opacity-50"
+                >
+                  Next →
+                </button>
+              )}
+            </div>
           </div>
         </motion.div>
       </div>
-
-      {/* Toaster */}
-      <Toaster
-        key={snack.key} // 👈 makes sure it re-renders
-        open={snack.open}
-        autoHideDuration={5000}
-        onClose={() => setSnack({ ...snack, open: false })}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        TransitionComponent={SlideTransition}
-      >
-        <toast
-          onClose={() => setSnack({ ...snack, open: false })}
-          severity={snack.type}
-          variant="filled"
-          icon={false}
-          sx={{
-            width: "100%",
-            borderRadius: "12px",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
-            fontSize: "0.95rem",
-            fontWeight: 500,
-            letterSpacing: "0.3px",
-            display: "flex",
-            alignItems: "center",
-            px: 3,
-            py: 2,
-            ...(snack.type === "success"
-              ? { background: "linear-gradient(135deg, #0D9488, #14B8A6)", color: "#fff" }
-              : { background: "linear-gradient(135deg, #B91C1C, #DC2626)", color: "#fff" }),
-          }}
-        >
-          <toastTitle sx={{ fontWeight: 700, mb: 0.5, fontSize: "1rem" }}>
-            {snack.type === "success" ? "✅ Success" : "⚠️ Error"}
-          </toastTitle>
-          {snack.message}
-        </toast>
-      </Toaster>
     </div>
   );
 };
-
-        </CardContent>
-      </Card>
-      <Toaster />
-    </div>
 
 export default VehicleInsuranceForm;

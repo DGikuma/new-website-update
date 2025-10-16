@@ -1,5 +1,5 @@
 export default function CareersLayout({ children }: { children: React.ReactNode }) {
     return (
-        <section className="w-full px-6 md:px-12 lg:px-24">{children}</section>
+        <section className="relative w-screen min-h-screen overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">{children}</section>
     );
 }

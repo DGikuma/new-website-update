@@ -355,23 +355,35 @@ export const Navbar = () => {
   return (
     <>
       {/* Topbar */}
-      < div className="w-full bg-primary text-white text-sm px-6 py-2 flex items-center relative z-50" >
-        <div className="flex flex-wrap gap-4 justify-center w-full">
-          {["Newsroom", "Careers", "Blog", "Complaints", "Contact Us"].map(
-            (item) => (
-              <Link
-                key={item}
-                href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                className="hover:underline text-white"
-              >
-                {item}
-              </Link>
-            )
-          )}
+      <div className="w-full bg-primary text-white text-sm px-6 py-2 flex items-center justify-between relative z-50">
+        {/* Left: Full-height white logo section */}
+        <div className="hidden md:flex items-center gap-2 flex-shrink-0 bg-white h-full absolute left-0 top-0 px-4">
+          <Link href="/" className="flex items-center gap-2 h-full">
+            <img
+              src="/images/logo1.png"
+              alt="Birdview Logo"
+              className="h-full w-auto object-contain"
+            />
+            <span className="font-semibold text-primary"></span>
+          </Link>
         </div>
 
-        {/* Portals dropdown */}
-        < div className="flex items-center gap-4 relative ml-auto" ref={menuRef} >
+
+        {/* Center: Menu links */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-wrap gap-4 justify-center">
+          {["Newsroom", "Careers", "Blog", "Complaints", "Contact Us"].map((item) => (
+            <Link
+              key={item}
+              href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+              className="hover:underline text-white whitespace-nowrap"
+            >
+              {item}
+            </Link>
+          ))}
+        </div>
+
+        {/* Right: Portals dropdown */}
+        <div className="flex items-center gap-4 relative flex-shrink-0 ml-auto" ref={menuRef}>
           <Button
             onPress={() => toggleMenu("portals")}
             className="bg-danger text-white font-semibold px-4 py-2 rounded-md transition-all duration-300"
@@ -418,8 +430,8 @@ export const Navbar = () => {
               </motion.div>
             )}
           </AnimatePresence>
-        </div >
-      </div >
+        </div>
+      </div>
 
       {/* HeroUI Navbar */}
       < HeroUINavbar
@@ -429,7 +441,7 @@ export const Navbar = () => {
       >
         {/* Left side (brand + nav items) */}
         < NavbarContent className="basis-1/5 md:basis-full" justify="start" >
-          <NavbarBrand as="li" className="max-w-fit">
+          <NavbarBrand as="li" className="max-w-fit md:hidden">
             <NextLink
               className="flex justify-start items-center gap-2 bg-white px-2 py-1 rounded-md shadow-md"
               href="/"
@@ -441,7 +453,6 @@ export const Navbar = () => {
               />
             </NextLink>
           </NavbarBrand>
-
 
           {/* Desktop Nav Items */}
           <ul className="hidden lg:flex gap-6 justify-start ml-4 relative">

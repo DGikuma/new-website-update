@@ -1,31 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Toaster, toast } from "@/components/ui/toaster";
+"use client";
 
-import Image from 'next/image';
+import React, { useState, useEffect } from "react";
+import {
+  Input,
+  Button,
+  Card,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  toast,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import PhoneInput from "react-phone-input-2";
+import { motion, AnimatePresence } from "framer-motion";
 import "react-phone-input-2/lib/style.css";
 
-// Mui imports
-// removed MUI TextField from '@mui/material/TextField';
-// removed MUI Button from '@mui/material/Button';
-  
-// removed MUI Toaster from '@mui/material/Toaster';
-// removed MUI toast from '@mui/material/toast';
-
- 
-import {  Dialog, DialogActions, DialogContent, DialogTitle,   Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
- 
-
-import { Country, City } from "country-state-city";
-
-// Importing components
-import BackgroundImage from '../components/BackgroundImage';export interface ErrorsType {
+export interface DependantType {
+  id: number;
+  relationship: string;
+  title: string;
+  firstName: string;
+  middleName: string;
+  surname: string;
+  idtypes: string;
+  idnos: string;
+  dob: string;
+  gendere: string;
+  countrye: string;
+  cities: string;
 }
 
 export interface FormdataType {
@@ -45,96 +50,40 @@ export interface FormdataType {
   address: string;
   mobileno: string;
   eimail: string;
-  dependantsData: any;
-  relationship: string;
-  firstName: string;
-  middleName: string;
-  surname: string;
-  idtypes: string;
-  idnos: string;
-  dob: string;
-  gendere: string;
-  countrye: string;
-  cities: string;
+  dependantsData: DependantType[];
 }
 
-export interface PaginationmodelType {
-  page: number;
-  pageSize: number;
-}
-
-
-
+const countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+  "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+  "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde",
+  "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Congo-Brazzaville)",
+  "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia (Czech Republic)", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+  "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini (fmr. Swaziland)", "Ethiopia", "Fiji", "Finland",
+  "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
+  "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait",
+  "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+  "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico",
+  "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)", "Namibia", "Nauru",
+  "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman",
+  "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar",
+  "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+  "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa",
+  "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan",
+  "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
+  "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
+  "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"];
+const titles = ["Mr", "Master", "Mrs", "Miss", "Ms", "Dr", "Prof"];
+const idTypes = ["National ID", "Passport", "Birth Certificate"];
+const genders = ["Male", "Female", "Others"];
+const relationships = ["Spouse", "Parent", "Child", "Sibling", "Next Of Kin"];
 
 const MemberForm: React.FC = () => {
-
-
-
-  const [snackbarOpen, setToasterOpen] = useState<boolean>(false);
-  const [alertType, settoastType] = useState<string>('success'); // 'success' or 'error'
-  const [alertMessage, settoastMessage] = useState<string>('');
-  const [loaderIcon, setLoaderIcon] = useState<boolean>(false);
-  
-
-  // Handle Toaster close
-  const handleClose: React.FC = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setToasterOpen(false);
-  };
-   
-  const handlePhoneChange: React.FC = (value, string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      mobileno: value, 
-    }));
-  };
-
-  const countries = [
-    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
-    "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
-    "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde",
-    "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Congo-Brazzaville)",
-    "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia (Czech Republic)", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
-    "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini (fmr. Swaziland)", "Ethiopia", "Fiji", "Finland",
-    "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
-    "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
-    "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait",
-    "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
-    "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico",
-    "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)", "Namibia", "Nauru",
-    "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman",
-    "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar",
-    "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
-    "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa",
-    "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan",
-    "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
-    "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
-    "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
-  ];
-   
-  const [entries, setEntries] = useState<any[]>([]);
- 
-  const [date, setDate] = useState<string>("");
-
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-
-  const [currentDependant, setCurrentDependant] = useState<any | null>(null);
-  const today = new Date().toISOString().split('T')[0]; 
-
-  const [dependentCount, setDependentCount] = useState<number>(0);
-
-  const [errors, setErrors] = useState<ErrorsType>({});
-
-  const [isSpouseEligible, setIsSpouseEligible] = useState<boolean>(true);
-  const [isAdultRelationshipEligible, setIsAdultRelationshipEligible] = useState<boolean>(true);
-
-  // Initialize formData with dependantsData
-  const [formData, setFormData] = useState<FormdataType>({  
+  const today = new Date().toISOString().split("T")[0];
+  const [formData, setFormData] = useState<FormdataType>({
     memberidno: "",
     groupname: "Stoke UK Diaspora Sacco",
-    groupnumber: "NWKC",
+    groupnumber: "STOKEUKDIASPORA",
     title: "",
     firstname: "",
     lastname: "",
@@ -143,14 +92,14 @@ const MemberForm: React.FC = () => {
     idno: "",
     dateofbirth: "",
     gender: "",
-    country: "",
+    country: "Kenya",
     city: "",
     address: "",
     mobileno: "",
     eimail: "",
     dependantsData: [
       {
-        id: "",
+        id: 1,
         relationship: "",
         title: "",
         firstName: "",
@@ -160,91 +109,99 @@ const MemberForm: React.FC = () => {
         idnos: "",
         dob: "",
         gendere: "",
-        countrye: "",
+        countrye: "Kenya",
         cities: "",
       },
     ],
-});
-
-// Generate automatic member ID based on timestamp
-useEffect(() => {
-    const generateMemberId: React.FC = () => {
-      const now = new Date();
-      const uniqueNumber = `${now.getFullYear()}${now.getMonth() + 1}${now.getDate()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}${now.getMilliseconds()}`;
-      const lastSixDigits = uniqueNumber.slice(-6); // Extract last 6 digits
-      return `Birdview-M${lastSixDigits}`;
-    };
-
-    setFormData((prev) => ({ ...prev, memberidno: generateMemberId() }));
-}, []);
-
-// Update dependants when count changes
-useEffect(() => {
-  setFormData((prev) => {
-    const existingDependants = prev.dependantsData || [];
-    const newDependants = Array.from({ length: dependentCount }, (_, index) => {
-      const existingDependant = existingDependants[index];
-      return existingDependant || {
-        id: index + 1, 
-        relationship: "",
-        title: "",
-        firstName: "",
-        middleName: "",
-        surname: "",
-        idtypes: "",
-        idnos: "",
-        dob: "",
-        gendere: "", 
-        countrye: "",
-        cities: "",
-      };
-    });
-
-    return {
-      ...prev,
-      dependantsData: newDependants,
-    };
   });
 
-}, [dependentCount]);
+  const [dependentCount, setDependentCount] = useState(1);
+  const [currentDependant, setCurrentDependant] = useState<DependantType | null>(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [loaderIcon, setLoaderIcon] = useState<boolean>(false);
+  const [toasterOpen, setToasterOpen] = useState(false);
+  const [toastMessage, settoastMessage] = useState<string>("");
+  const [toastType, settoastType] = useState<"success" | "error" | "info" | "warning">("info");
 
-useEffect(() => {
-  console.log("*****Data****", formData);
-}, [formData]);
+  // Sync dependants count
+  useEffect(() => {
+    setFormData((prev) => {
+      const newDependants = Array.from({ length: dependentCount }, (_, idx) => {
+        return prev.dependantsData[idx] || {
+          id: idx + 1,
+          relationship: "",
+          title: "",
+          firstName: "",
+          middleName: "",
+          surname: "",
+          idtypes: "",
+          idnos: "",
+          dob: "",
+          gendere: "",
+          countrye: "Kenya",
+          cities: "",
+        };
+      });
+      return { ...prev, dependantsData: newDependants };
+    });
+  }, [dependentCount]);
 
-// Handle adding new dependant
-const handleAddDependant: React.FC = () => {
-  setDependentCount((prev) => prev + 1);
-};
+  useEffect(() => {
+    const now = new Date();
+    const uniqueNumber = `${now.getFullYear()}${now.getMonth() + 1}${now.getDate()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}${now.getMilliseconds()}`;
+    setFormData((prev) => ({ ...prev, memberidno: `Birdview-M${uniqueNumber.slice(-6)}` }));
+  }, []);
 
-
-  // Handle form changes (including dependants)
-  const handleChange: React.FC = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
- 
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
+  const handlePhoneChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, mobileno: value }));
+  };
 
-  if(name ==="selectedCountry"){
+  const handleAddDependant = () => {
+    if (dependentCount >= 7) {
+      toast({ title: "⚠️ Limit reached", description: "Maximum 7 dependants allowed.", variant: "warning" });
+      return;
+    }
+    setDependentCount((prev) => prev + 1);
+  };
 
-      // Get the selected country's full name
-      const selectedCountryObj = Country.getAllCountries().find(c => c.isoCode === value);
-      const countryName = selectedCountryObj ? selectedCountryObj.name : "";
-      setFormData((prev) => ({
-        ...prev,
-        selectedCountry: countryName, // Store country name instead of isoCode
-        selectedCity:""
-      }));
+  const handleOpenModal = (dep: DependantType) => {
+    setCurrentDependant(dep);
+    setOpenModal(true);
+  };
 
+  const handleCloseModal = () => {
+    setCurrentDependant(null);
+    setOpenModal(false);
+  };
 
-      }else{
+  const handleChangeDep = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | { name: string; value: string }
+  ) => {
+    if ("target" in e) {
+      const { name, value } = e.target;
+      setCurrentDependant((prev) => prev && { ...prev, [name]: value });
+    } else {
+      const { name, value } = e;
+      setCurrentDependant((prev) => prev && { ...prev, [name]: value });
+    }
+  };
 
+  const handleSaveDependant = () => {
+    if (!currentDependant) return;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      dependantsData: prev.dependantsData.map((d) =>
+        d.id === currentDependant.id ? currentDependant : d
+      ),
     }));
-
-  }
-
+    handleCloseModal();
   };
 
   const handleSubmit = async (e) => {
@@ -255,7 +212,7 @@ const handleAddDependant: React.FC = () => {
     const updatedFormData = { ...formData, dependantsData: formData.dependantsData };
 
     try {
-      const res = await fetch('/api/stoke-uk-diaspora-sacco-member-form', {
+      const res = await fetch('/api/kenyans-in-north-wales-member-form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -291,762 +248,210 @@ const handleAddDependant: React.FC = () => {
     }
   };
 
-  const columns = [
-    { field: 'id', headerName: 'No', width: 100 },
-    { field: 'relationship', headerName: 'Relationship', width: 200 },
-    { field: 'title', headerName: 'Title', width: 200 },
-    { field: 'firstName', headerName: 'First Name', width: 200 },
-    { field: 'middleName', headerName: 'Middle Name', width: 200 },
-    { field: 'surname', headerName: 'Surname', width: 200 },
-    { field: 'idtypes', headerName: 'ID Type', width: 200 },
-    { field: 'idnos', headerName: 'ID Number', width: 200 },
-    { field: 'dob', headerName: 'DOB', width: 150 },
-    { field: 'gendere', headerName: 'Gender', width: 150 }, 
-    { field: 'countrye', headerName: 'Country of Residence', width: 150 }, 
-    { field: 'cities', headerName: 'City of Residence', width: 150 }, 
-    {
-        field: 'action',
-        headerName: 'Action',
-        width: 150,
-        renderCell: (params) => (
-            <SaveAsIcon variant="contained" sx={{ cursor: "pointer", color: '#157EBC' }} />
-        ),
-    },
-];
-
-const columnse = [
-  { field: 'id', headerName: 'No', width: 100 },
-  { field: 'memberidno', headerName: 'Member Id No', width: 200 },
-  { field: 'relationship', headerName: 'Relationship', width: 200 },
-  { field: 'title', headerName: 'Title', width: 200 },
-  { field: 'firstName', headerName: 'First Name', width: 200 },
-  { field: 'middleName', headerName: 'Middle Name', width: 200 },
-  { field: 'surname', headerName: 'Surname', width: 200 },
-  { field: 'idtypes', headerName: 'ID Type', width: 200 },
-  { field: 'idnos', headerName: 'ID Number', width: 200 },
-  { field: 'dob', headerName: 'DOB', width: 150 },
-  { field: 'gendere', headerName: 'Gender', width: 150 }, 
-  { field: 'countrye', headerName: 'Country of Residence', width: 150 }, 
-  { field: 'cities', headerName: 'City of Residence', width: 150 }, 
-  {
-      field: 'action',
-      headerName: 'Action',
-      width: 150,
-      renderCell: (params) => (
-          <SaveAsIcon variant="contained" sx={{ cursor: "pointer", color: '#157EBC' }} />
-      ),
-  },
-];
-
-const [paginationModel, setPaginationModel] = useState<PaginationmodelType>({
-  page: 0,
-  pageSize: 5,
-});
-
-
-const handleOpenDialog: React.FC = (dependant) => {
-  setCurrentDependant(dependant);
-  setOpenDialog(true);
-};
-
-const handleCloseDialog: React.FC = () => {
-  setOpenDialog(false);
-  setCurrentDependant(null);
-  setErrors({});
-  
-};
-
-
- 
-const handleSave: React.FC = () => {
-  const newErrors = {};
-
-  // ✅ Validation - Ensure Required Fields Are Filled
-  if (!currentDependant?.relationship) newErrors.relationship = 'Relationship is required';
-  if (!currentDependant?.title) newErrors.title = 'Title is required';
-  if (!currentDependant?.firstName) newErrors.firstName = 'First Name is required';
-  if (!currentDependant?.middleName) newErrors.middleName = 'Middle Name is required';
-  if (!currentDependant?.surname) newErrors.surname = 'Surname is required';
-  if (!currentDependant?.dob) newErrors.dob = 'Date of Birth is required';
-  if (!currentDependant?.idtypes) newErrors.idtypes = 'ID Type is required'; 
-  if (!currentDependant?.idnos) newErrors.idnos = 'ID Number is required';
-  if (!currentDependant?.gendere) newErrors.gendere = 'Gender is required';
-  if (!currentDependant?.countrye) newErrors.countrye = 'Country is required'; 
-  if (!currentDependant?.cities) newErrors.cities = 'City is required';
-
-  setErrors(newErrors);
-
-  if (Object.keys(newErrors).length > 0) {
-    return;
-  }
-
-  setFormData((prev) => {
-    const isExistingDependant = prev.dependantsData.some(dep => dep.id === currentDependant?.id);
-    
-    return {
-      ...prev,
-      dependantsData: isExistingDependant 
-        ? prev.dependantsData.map((dep) =>
-            dep.id === currentDependant?.id ? { ...dep, ...currentDependant } : dep
-          )
-        : [...prev.dependantsData, currentDependant], 
-    };
-  });
-
-  setErrors({});
-  handleCloseDialog();
-};
-
-const handleChangeDep: React.FC = (event) => {
-  const { name, value } = event.target;
-
-  setCurrentDependant((prev) => {
-    const updated = {
-      ...prev,
-      [name]: value ?? "",
-    };
-
-    // Validate age if DOB is changed and relationship is Spouse or Parent
-    if (name === "dob" && ["Spouse", "Parent"].includes(updated.relationship)) {
-      const selectedDate = new Date(value);
-      const today = new Date();
-      const age = today.getFullYear() - selectedDate.getFullYear();
-      const hasHadBirthday =
-        today.getMonth() > selectedDate.getMonth() ||
-        (today.getMonth() === selectedDate.getMonth() && today.getDate() >= selectedDate.getDate());
-
-      const actualAge = hasHadBirthday ? age : age - 1;
-      const isUnder18 = actualAge < 18;
-
-      setIsAdultRelationshipEligible(!isUnder18);
-      setErrors((prev = {}) => ({
-        ...prev,
-        dob: isUnder18 ? `${updated.relationship} must be at least 18 years old.` : "",
-      }));
-    }
-
-    return updated;
-  });
-
-  if (name !== "dob") {
-    setErrors((prev = {}) => ({
-      ...prev,
-      [name]: "",
-    }));
-  }
-};
-
-const handleReset: React.FC = () => {
-  // Reset the formData state
-  setFormData({
-    memberidno:"",
-    groupname: "",
-    groupnumber: "",
-    title: "",
-    firstname: "",
-    lastname: "",
-    middlename: "",
-    idtype: "",
-    idno: "",
-    dateofbirth: "",
-    gender: "",
-    country: "",
-    city: "",
-    address: "",
-    mobileno: "",
-    eimail: "",
-    dependantsData: [
-      {
-        id: "",
-        relationship: "",
-        title: "",
-        firstName: "",
-        middleName: "",
-        surname: "",
-        idtypes: "",
-        idnos: "",
-        dob: "",
-        gendere: "",
-        countrye: "",
-        cities: "",
-      },
-    ],
-  });
-};
-
-const handleResete: React.FC = () => {
-  // Reset the formData state
-  setFormData({
-  
-        id: "",
-        relationship: "",
-        title: "",
-        firstName: "",
-        middleName: "",
-        surname: "",
-        idtypes: "",
-        idnos: "",
-        dob: "",
-        gendere: "",
-        countrye: "",
-        cities: "",
-  });
-};
-
-const [openDependantPopup, setOpenDependantPopup] = useState<boolean>(false);
+  // Add this inside your MemberForm component
+  const handleReset = () => {
+    setFormData({
+      memberidno: "",
+      groupname: "Stoke UK Diaspora Sacco",
+      groupnumber: "STOKEUKDIASPORA",
+      title: "",
+      firstname: "",
+      lastname: "",
+      middlename: "",
+      idtype: "",
+      idno: "",
+      dateofbirth: "",
+      gender: "",
+      country: "",
+      city: "",
+      address: "",
+      mobileno: "",
+      eimail: "",
+      dependantsData: [
+        {
+          id: 1,
+          relationship: "",
+          title: "",
+          firstName: "",
+          middleName: "",
+          surname: "",
+          idtypes: "",
+          idnos: "",
+          dob: "",
+          gendere: "",
+          countrye: "",
+          cities: "",
+        },
+      ],
+    });
+    setDependentCount(1);
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-      <Card className="w-full max-w-2xl shadow-xl border border-gray-200 rounded-2xl bg-white">
-        <CardContent>
-    <div className="relative bg-gray-100">
+    <div
+      className="min-h-screen flex items-center justify-center px-4 
+             bg-[url('/images/backdrop2.png')] bg-cover bg-center bg-no-repeat"
+    >
+      <Card className="w-full max-w-4xl shadow-xl rounded-2xl p-8">
+        <h2 className="text-2xl font-bold mb-6 text-center">Stoke UK Diaspora Sacco Member Form</h2>
 
-      { loaderIcon &&
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/75">
-         <div className="loaderIcon">
-                <div className="Iconbar bg-redCustom"></div>
-                <div className="Iconbar bg-blueCustom"></div>
-                <div className="Iconbar bg-redCustom"></div>
-                <div className="Iconbar bg-blueCustom"></div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Member Info */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input label="Member ID" value={formData.memberidno} disabled />
+            <Input label="Group Name" value={formData.groupname} disabled />
+            <Input label="Group Number" value={formData.groupnumber} disabled />
           </div>
-        </div>
-      }
 
-      {/* Top Div with BackgroundImage */}
- 
-
-      {/* Container for Bottom Div */}
-      <div className="relative left-0 right-0 flex justify-center">
-        <div className="bg-white w-full max-w-[calc(100%-2rem)] p-1 flex flex-col items-center justify-start overflow-visible rounded-3xl">
-
-          <div className='bg-white grid grid-cols-1 md:grid-cols-2 gap-8 mb-4'> 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Select
+              label="Title"
+              value={formData.title}
+              onValueChange={(v) => handleChange({ target: { name: "title", value: v } } as any)}
+            >
+              {titles.map((t) => (
+                <SelectItem key={t} value={t}>{t}</SelectItem>
+              ))}
+            </Select>
+            <Input label="First Name" name="firstname" value={formData.firstname} onChange={handleChange} required />
+            <Input label="Last Name" name="lastname" value={formData.lastname} onChange={handleChange} required />
           </div>
-                                      
-          {/* Form Section */}
 
-                 
-                     
-                        <form 
-                          style={{ boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)" }} 
-                          className="w-full  bg-white rounded-lg shadow-xl"
-                          onSubmit={handleSubmit}
-                        >
-                          <br/>
-                          <div className="text-gray-800 font-bold mb-2 flex flex-col sm:flex-row items-center sm:justify-between text-center relative">
-                          {/* Logo (Centered) */}
-                          <div className="flex-shrink-0">
-                            <Image
-                              width={180}
-                              height={50}
-                              src="/images/logo.jpeg"
-                              alt="Logo"
-                              style={{
-                                width: "19%",
-                                height: "auto",
-                                maxWidth: "360px",
-                                minWidth: "220px",
-                                transition: "width 0.3s ease-in-out",
-                              }}
-                            />
-                          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input label="Middle Name" name="middlename" value={formData.middlename} onChange={handleChange} />
+            <Select
+              label="ID Type"
+              value={formData.idtype}
+              onValueChange={(v) => handleChange({ target: { name: "idtype", value: v } } as any)}
+              required
+            >
+              {idTypes.map((id) => <SelectItem key={id} value={id}>{id}</SelectItem>)}
+            </Select>
+            <Input label="ID Number" name="idno" value={formData.idno} onChange={handleChange} required />
+          </div>
 
-                          {/* Centered Text (Moves below on small screens) */}
-                          <div className="mt-2 sm:mt-0 sm:absolute sm:left-1/2 sm:transform sm:-translate-x-1/2">
-                            <p>Stoke UK Diaspora Sacco Member Detail Forms</p>
-                          </div>
-                        </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input type="date" max={today} label="Date of Birth" name="dateofbirth" value={formData.dateofbirth} onChange={handleChange} required />
+            <Select
+              label="Gender"
+              selectedKeys={[formData.gender]}
+              onSelectionChange={(keys) =>
+                handleChange({ target: { name: "gender", value: Array.from(keys)[0] } } as any)
+              }
+            >
+              {genders.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+            </Select>
+            <Select
+              label="Country"
+              selectedKeys={[formData.country]}
+              onSelectionChange={(keys) =>
+                handleChange({ target: { name: "country", value: Array.from(keys)[0] } } as any)
+              }
+              required
+            >
+              {countries.map((c) => (
+                <SelectItem key={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </Select>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
-                            <TextField
-                            required
-                            name="memberidno"
-                            label="Member ID Number"
-                            variant="outlined"
-                            value={formData.memberidno}
-                            disabled
-                            fullWidth
-                            className="bg-gray-100 mb-6"
-                          />
-                            <TextField 
-                            required
-                            name="groupname"
-                            label="Group Name"
-                            variant="outlined"
-                            value="Stoke UK Diaspora Sacco"   
-                            InputProps={{
-                              readOnly: true, 
-                            }}
-                            fullWidth
-                            className="bg-gray-100 mb-6"
-                          />
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input label="City" name="city" value={formData.city} onChange={handleChange} />
+            <Input label="Address" name="address" value={formData.address} onChange={handleChange} />
+            <PhoneInput
+              country="ke"
+              value={formData.mobileno}
+              onChange={handlePhoneChange}
+              inputStyle={{ width: "100%", height: "57px", borderRadius: "8px" }}
+            />
+          </div>
 
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
-                              <TextField 
-                              required
-                              name="groupnumber"
-                              label="Group Number"
-                              variant="outlined"
-                              value="SUD-SACCO"
-                              InputProps={{
-                                readOnly: true, 
-                              }}
-                              fullWidth
-                              className="bg-gray-100 mb-6"
-                            />
-                            
-                              </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
-                          <TextField
-                              select
-                              required
-                              name="title"
-                              label="Title"
-                              variant="outlined"
-                              value={formData.title}
-                              onChange={handleChange}
-                              fullWidth
-                              className="bg-gray-100 rounded-lg"
-                            >
-                              {["Mr", "Master", "Mrs", "Miss", "Ms", "Dr", "Prof"].map((title) => (
-                                <MenuItem key={title} value={title}>
-                                  {title}
-                                </MenuItem>
-                              ))}
-                            </TextField>
-                            <TextField
-                              required
-                              name="firstname"
-                              label="First Name"
-                              variant="outlined"
-                              value={formData.firstname}
-                              onChange={handleChange}
-                              fullWidth
-                              className="bg-gray-100 rounded-lg"
-                            />
-                              
-                            <TextField 
-                              required
-                              name="lastname"
-                              label="Last Name"
-                              variant="outlined"
-                              value={formData.lastname}
-                              onChange={handleChange}
-                              fullWidth
-                              className="bg-gray-100"
-                            />
-                            <TextField 
-                              required
-                              name="middlename"
-                              label="Middle Name"
-                              variant="outlined"
-                              value={formData.middlename}
-                              onChange={handleChange}
-                              fullWidth
-                              className="bg-gray-100 mb-6"
-                            />
-                             <TextField
-                            required
-                            name="idtype"
-                            select
-                            label="Identification Type"
-                            variant="outlined"
-                            value={formData.idtype}
-                            onChange={handleChange}
-                            fullWidth
-                            className="bg-gray-100 mb-6"
-                            >
-                            <MenuItem value="National ID">National ID</MenuItem>
-                            <MenuItem value="Passport">Passport</MenuItem>
-                            <MenuItem value="Birth Certificate">Birth Certificate</MenuItem>
-                            </TextField>
-                            <TextField 
-                            required
-                            name="idno"
-                            label="Identification Number"
-                            variant="outlined"
-                            value={formData.idno}
-                            onChange={handleChange}
-                            fullWidth
-                            className="bg-gray-100 mb-6"
+          <Input label="Email" name="eimail" value={formData.eimail} onChange={handleChange} />
 
-                            />
-                          <TextField
-                            label="Date of Birth"
-                            name="dateofbirth"
-                            type="date"
-                            onChange={(e) => {
-                              const selectedDate = new Date(e.target.value);
-                              const today = new Date();
-                              const age = today.getFullYear() - selectedDate.getFullYear();
-                              const hasHadBirthdayThisYear =
-                                today.getMonth() > selectedDate.getMonth() ||
-                                (today.getMonth() === selectedDate.getMonth() &&
-                                  today.getDate() >= selectedDate.getDate());
+          {/* Dependants */}
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold">Dependants</h3>
+              <Button onClick={handleAddDependant}>Add Dependant</Button>
+            </div>
+            {formData.dependantsData.map((dep) => (
+              <Button key={dep.id} type="button" className="my-2" onClick={() => handleOpenModal(dep)}>
+                Edit Dependant {dep.id}
+              </Button>
+            ))}
+          </div>
 
-                              const actualAge = hasHadBirthdayThisYear ? age : age - 1;
+          <div className="flex justify-center gap-6 mt-6">
+            <Button
+              type="submit"
+              color="primary"
+              className="text-white font-semibold px-10 py-3 rounded-lg shadow-md"
+            >
+              Submit
+            </Button>
+            <Button
+              type="button"
+              color="danger"
+              className="text-white font-semibold px-10 py-3 rounded-lg shadow-md"
+              onClick={handleReset}
+            >
+              Reset
+            </Button>
+          </div>
 
-                              if (actualAge < 18) {
-                                alert("You must be at least 18 years old.");
-                                return;
-                              }
+        </form>
+      </Card>
 
-                              setFormData((prev) => ({
-                                ...prev,
-                                dateofbirth: e.target.value,
-                              }));
-                            }}
-                            InputLabelProps={{ shrink: true }}
-                            className="bg-gray-100 mb-6"
-                            fullWidth
-                          />
-                            <TextField
-                            required
-                            name="gender"
-                            select
-                            label="Gender"
-                            variant="outlined"
-                            value={formData.gender}
-                            onChange={handleChange}
-                            fullWidth
-                            className="bg-gray-100 mb-6"
-                            >
-                            <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
-                            <MenuItem value="Others">Others</MenuItem>
-                            </TextField>
-                            <TextField
-                            required
-                            name="country"
-                            select
-                            label="Country Of Residence Of Main Member"
-                            variant="outlined"
-                            value={formData.country}
-                            onChange={handleChange}
-                            fullWidth
-                            className="bg-gray-100 mb-6"
-                          >
-                            {countries.map((country) => (
-                              <MenuItem key={country} value={country}>
-                                {country}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                            <TextField 
-                            required
-                            name="city"
-                            label="City Of Residence Of Main Member"
-                            variant="outlined"
-                            value={formData.city}
-                            onChange={handleChange}
-                            fullWidth
-                            />
-                            <TextField 
-                              required
-                              name="address"
-                              label="Physical / Postal Address"
-                              variant="outlined"
-                              value={formData.address}
-                              onChange={handleChange}
-                              fullWidth
-                              className="bg-gray-100 mb-6"
-                            />
-                            <div className="mb-6">
-                              <PhoneInput
-                                required
-                                country={"ke"} 
-                                value={formData.mobileno}
-                                onChange={handlePhoneChange}
-                                inputStyle={{
-                                width: "100%",
-                                height: "55px",
-                                borderRadius: "4px",
-                              }}
-                                buttonClass="!bg-gray-200 !border-r"
-                                containerClass="!w-full"
-                                className="bg-gray-100"
-                              />
-                            </div>
-                            <TextField 
-                              required
-                              name="eimail"
-                              label="Email"
-                              variant="outlined"
-                              value={formData.eimail}
-                              onChange={handleChange}
-                              fullWidth
-                              className="bg-gray-100 mb-6"
-                            /> 
-                            <div>
-                            
-                          </div>
-                            
-                          </div>
-
-
-                          <div className="flex justify-left items-center py-4 m-4">
-                            <p className="text-xl font-semibold text-gray-700">Dependant Details</p>
-                          </div>
-
-                          <div className="shadow-xl p-4">
-                            <Button onClick={handleAddDependant}>Add Dependant</Button>
-                            <DataGrid
-                                rows={formData.dependantsData}
-                                columns={columns}  
-                                pagination
-                                paginationMode="client"
-                                pageSizeOptions={[5, 10, 25]}
-                                
-                                pageSize={paginationModel.pageSize}
-                                paginationModel={paginationModel}
-                                onRowClick={(params) => handleOpenDialog(params.row)}
-                                components={{ Toolbar: GridToolbar }}
-                                autoHeight
-                                rowHeight={40}
-                                sx={{
-                                    width: '100%',
-                                    overflowX: 'auto',
-                                    '& .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus': {
-                                        outline: 'none',
-                                    },
-                                    '& .MuiDataGrid-cell:hover': {
-                                        cursor: 'pointer',
-                                    },
-                                    '& .MuiDataGrid-columnHeader:hover': {
-                                        cursor: 'pointer',
-                                    },
-                                    '@media (max-width: 600px)': {
-                                        '& .MuiDataGrid-columnHeader': {
-                                            fontSize: '0.8rem',
-                                        },
-                                        '& .MuiDataGrid-cell': {
-                                            fontSize: '0.8rem',
-                                        },
-                                    },
-                                }}
-                            />
-
-                            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                                <DialogTitle>Edit Dependant   </DialogTitle>
-                                <DialogContent>
-                                <FormControl fullWidth margin="dense">
-                                      <InputLabel id="relationship-label">Relationship</InputLabel>
-                                      <Select
-                                        name="relationship"
-                                        value={currentDependant?.relationship || ""}  // Prevent undefined
-                                        onChange={handleChangeDep}
-                                        label="Relationship"
-                                      >
-                                      <MenuItem value="Spouse" disabled={!isAdultRelationshipEligible}>
-                                        Spouse (spouse to the group member)
-                                      </MenuItem>
-
-                                      <MenuItem value="Parent" disabled={!isAdultRelationshipEligible}>
-                                        Parent (parents / parents in-law to the group member)
-                                      </MenuItem>
-                                        <MenuItem value="Child">Child(child to the group member)</MenuItem>
-                                        <MenuItem value="Sibling">Sibling(brother & sister / brother & sister in-Laws to the group member)</MenuItem>  
-                                        <MenuItem value="Next Of Kin">Next Of Kin</MenuItem>
-                                      </Select>
-                                      {errors.relationship && <div style={{ color: 'red' }}>{errors.relationship}</div>}
-                                    </FormControl>
-                                    <TextField
-                                              select
-                                              name="title"
-                                              label="Title"
-                                              value={currentDependant?.title || ''}
-                                              onChange={handleChangeDep}
-                                            margin="dense"
-                                            >
-                                              {["Mr", "Master", "Mrs", "Miss", "Ms", "Dr", "Prof"].map((title) => (
-                                                <MenuItem key={title} value={title}>
-                                                  {title}
-                                                </MenuItem>
-                                              ))}
-                                               error={!!errors.title}
-                                               helperText={errors.title}
-                                            </TextField>
-                                    <TextField
-                                        label="First Name"
-                                        name="firstName"
-                                        value={currentDependant?.firstName || ''}
-                                        onChange={handleChangeDep}
-                                        fullWidth
-                                        margin="dense"
-                                        error={!!errors.firstName}
-                                        helperText={errors.firstName}
-                                    
-                                    />
-                                    <TextField
-                                        label="Middle Name"
-                                        name="middleName"
-                                        value={currentDependant?.middleName || ''}
-                                        onChange={handleChangeDep}
-                                        fullWidth
-                                        margin="dense"
-                                        error={!!errors.middleName}
-                                        helperText={errors.middleName}
-                                    />
-                                    <TextField
-                                        label="Surname"
-                                        name="surname"
-                                        value={currentDependant?.surname || ''}
-                                        onChange={handleChangeDep}
-                                        fullWidth
-                                        margin="dense"
-                                        error={!!errors.surname}
-                                        helperText={errors.surname}
-                                      
-                                    />
-                                    <FormControl fullWidth margin="dense"  >
-                                          <InputLabel id="idtype-label">ID Type</InputLabel>
-                                          <Select
-                                              name="idtypes"
-                                              value={currentDependant?.idtypes || ''}
-                                              onChange={handleChangeDep}
-                                              label="ID Type"
-                                          >
-                                              <MenuItem value="National ID">National ID</MenuItem>
-                                              <MenuItem value="Passport">Passport</MenuItem>
-                                              <MenuItem value="Birth Certificate">Birth Certificate</MenuItem>
-                                          </Select>
-                                          {errors.idtypes && <div style={{ color: 'red' }}>{errors.idtypes}</div>}
-                                      </FormControl>
-                                      <TextField
-                                          label="ID Number"
-                                          name="idnos"
-                                          value={currentDependant?.idnos || ''}
-                                          onChange={handleChangeDep}
-                                          fullwidth
-                                          margin ="dense"
-                                          error={!!errors.surname}
-                                          helperText={errors.surname}
-                                              />
-                                              <TextField
-                                                  label="DOB"
-                                                  name="dob"
-                                                  type="date"
-                                                  value={currentDependant?.dob || ''}
-                                                  onChange={handleChangeDep}
-                                                  fullWidth
-                                                  margin="dense"
-                                                  InputLabelProps={{
-                                                      shrink: true,
-                                                  }}
-                                                  InputProps={{
-                                                      inputProps: { max: today }, 
-                                                  }}
-                                                  error={!!errors.dob}
-                                                  helperText={errors.dob}
-                                              />
-
-                                              <FormControl fullWidth margin="dense"  >
-                                                  <InputLabel id="gender-label">Gender</InputLabel>
-                                                  <Select
-                                                      name="gendere"
-                                                      value={currentDependant?.gendere || ''}
-                                                      onChange={handleChangeDep}
-                                                      label="Gender"
-                                                  >
-                                                      <MenuItem value="Male">Male</MenuItem>
-                                                      <MenuItem value="Female">Female</MenuItem>
-                                                  </Select>
-                                                  {errors.gendere && <div style={{ color: 'red' }}>{errors.gendere}</div>}
-                                              </FormControl>
-                                              <TextField
-                                                      required
-                                                      name="countrye"
-                                                      select
-                                                      label="Country"
-                                                      variant="outlined"
-                                                      value={currentDependant?.countrye || ''}
-                                                      onChange={handleChangeDep}
-                                                      fullWidth
-                                                      className="bg-gray-100 mb-6"
-                                                    >
-                                                      {countries.map((country) => (
-                                                        <MenuItem key={country} value={country}>
-                                                          {country}
-                                                        </MenuItem>
-                                                      ))}
-                                                       error={!!errors.countrye}
-                                                       helperText={errors.countrye}
-                                                    </TextField>
-                                                      <TextField 
-                                                      required
-                                                      name="cities"
-                                                      label="City Of residence"
-                                                      variant="outlined"
-                                                      value={currentDependant?.cities}
-                                                      onChange={handleChangeDep}
-                                                      fullWidth
-                                                      className="bg-gray-100 mb-6"
-                                                      error={!!errors.cities}
-                                                      helperText={errors.cities}
-                                                      />
-                                            
-                                          </DialogContent>
-                                          <DialogActions>
-                                              <Button onClick={handleCloseDialog} color="primary">Cancel</Button>
-                                              <Button onClick={handleSave}  color="primary">Save</Button>
-                                          </DialogActions>
-                                      </Dialog>
-                                    </div>                                                           
-
-                                      <div className="flex justify-center mt-8 space-x-6">
-                                      <button 
-                                        type="submit" 
-                                        className="relative px-8 py-4 rounded-xl text-white font-extrabold text-lg 
-                                                  bg-gradient-to-r from-blue-500 to-blue-700 shadow-lg 
-                                                  hover:from-blue-600 hover:to-blue-800 hover:shadow-blue-500/50 
-                                                  focus:ring-4 focus:ring-blue-400 
-                                                  transition-all duration-300 ease-in-out 
-                                                  before:absolute before:inset-0 before:bg-white/10 before:rounded-xl before:opacity-0 before:transition-opacity before:duration-300 before:hover:opacity-100 
-                                                  hover:scale-105"
-                                      >
-                                        Submit
-                                      </button>
-                                      <button 
-                                        type="reset" 
-                                        onClick={handleReset}
-                                        className="relative px-8 py-4 rounded-xl text-white font-extrabold text-lg 
-                                                  bg-gradient-to-r from-red-500 to-red-700 shadow-lg 
-                                                  hover:from-red-600 hover:to-red-800 hover:shadow-red-500/50 
-                                                  focus:ring-4 focus:ring-red-400 
-                                                  transition-all duration-300 ease-in-out 
-                                                  before:absolute before:inset-0 before:bg-white/10 before:rounded-xl before:opacity-0 before:transition-opacity before:duration-300 before:hover:opacity-100 
-                                                  hover:scale-105"
-                                      >
-                                        Reset
-                                      </button>
-                                    </div>
-
-                                  </form>
-                                  
-                          </div>
-                                  
-                        </div>
-      
-
-         {/* Toaster for success and error messages */}
-      <Toaster
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <toast onClose={handleClose} severity={alertType} sx={{ width: '100%' }}>
-          {alertMessage}
-        </toast>
-      </Toaster>
-
+      <AnimatePresence>
+        {openModal && currentDependant && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-lg"
+            >
+              <Modal isOpen={openModal} onOpenChange={setOpenModal} size="lg">
+                <ModalContent>
+                  <ModalHeader>Edit Dependant</ModalHeader>
+                  <ModalBody className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Input label="Relationship" value={currentDependant.relationship} onChange={(e) => handleChangeDep(e)} />
+                    <Select label="Title" value={currentDependant.title} onValueChange={(v) => handleChangeDep({ name: "title", value: v })}>
+                      {titles.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                    </Select>
+                    <Input label="First Name" value={currentDependant.firstName} onChange={(e) => handleChangeDep(e)} />
+                    <Input label="Middle Name" value={currentDependant.middleName} onChange={(e) => handleChangeDep(e)} />
+                    <Input label="Surname" value={currentDependant.surname} onChange={(e) => handleChangeDep(e)} />
+                    <Select label="ID Type" value={currentDependant.idtypes} onValueChange={(v) => handleChangeDep({ name: "idtypes", value: v })}>
+                      {idTypes.map((id) => <SelectItem key={id} value={id}>{id}</SelectItem>)}
+                    </Select>
+                    <Input label="ID No" value={currentDependant.idnos} onChange={(e) => handleChangeDep(e)} />
+                    <Input label="DOB" type="date" max={today} value={currentDependant.dob} onChange={(e) => handleChangeDep(e)} />
+                    <Select label="Gender" value={currentDependant.gendere} onValueChange={(v) => handleChangeDep({ name: "gendere", value: v })}>
+                      {["Male", "Female"].map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                    </Select>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button variant="light" onPress={handleCloseModal}>Cancel</Button>
+                    <Button color="primary" onPress={handleSaveDependant}>Save</Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
-
-        </CardContent>
-      </Card>
-      <Toaster />
-    </div>
 
 export default MemberForm;

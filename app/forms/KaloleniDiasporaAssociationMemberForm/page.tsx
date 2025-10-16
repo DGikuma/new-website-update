@@ -82,8 +82,8 @@ const MemberForm: React.FC = () => {
   const today = new Date().toISOString().split("T")[0];
   const [formData, setFormData] = useState<FormdataType>({
     memberidno: "",
-    groupname: "LDSKCF Members",
-    groupnumber: "LDSKCF.org.uk",
+    groupname: "Kaloleni Diaspora Association",
+    groupnumber: "KADA",
     title: "",
     firstname: "",
     lastname: "",
@@ -212,7 +212,7 @@ const MemberForm: React.FC = () => {
     const updatedFormData = { ...formData, dependantsData: formData.dependantsData };
 
     try {
-      const res = await fetch('/api/ldskcf-member-form', {
+      const res = await fetch('/api/kaloleni-diaspora-association-member-form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -242,7 +242,10 @@ const MemberForm: React.FC = () => {
     } catch (error) {
       // Show error snackbar
       settoastType('error');
-      settoastMessage(`Error: ${typeof error === "object" && error !== null && "message" in error ? (error as any).message : String(error)}`);
+      settoastMessage(
+        `Error: ${error instanceof Error ? error.message : "An unexpected error occurred"
+        }`
+      );
       setToasterOpen(true);
       setLoaderIcon(false);
     }
@@ -252,8 +255,8 @@ const MemberForm: React.FC = () => {
   const handleReset = () => {
     setFormData({
       memberidno: "",
-      groupname: "LDSKCF Members",
-      groupnumber: "LDSKCF.org.uk",
+      groupname: "Kaloleni Diaspora Association",
+      groupnumber: "KADA",
       title: "",
       firstname: "",
       lastname: "",
@@ -293,7 +296,7 @@ const MemberForm: React.FC = () => {
              bg-[url('/images/backdrop2.png')] bg-cover bg-center bg-no-repeat"
     >
       <Card className="w-full max-w-4xl shadow-xl rounded-2xl p-8">
-        <h2 className="text-2xl font-bold mb-6 text-center">LDSKCF Members Member Form</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Kaloleni Diaspora Member Detail Form</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Member Info */}

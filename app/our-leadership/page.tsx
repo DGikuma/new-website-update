@@ -56,7 +56,7 @@ export default function OurLeadership() {
     ];
 
     return (
-        <section className="w-full min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 px-6 md:px-12 lg:px-24 py-20 space-y-28 relative overflow-hidden">
+        <section className="relative w-full min-h-screen overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 px-6 md:px-12 lg:px-24 py-20 space-y-28 relative overflow-hidden">
             {/* Animated hybrid background */}
             <div className="absolute inset-0 -z-10 opacity-50">
                 <Image

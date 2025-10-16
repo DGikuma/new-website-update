@@ -17,6 +17,8 @@ import {
   Clock,
 } from "lucide-react";
 
+import LiquidRingLoader from "@/components/LiquidRingLoader";
+
 // Animated counter component
 interface StatItem {
   label: string;
@@ -172,11 +174,11 @@ export default function Home() {
   ];
 
   const partners = [
-    { name: "AXA", logo: "/partners/axa.png" },
-    { name: "Allianz", logo: "/partners/allianz.png" },
-    { name: "Prudential", logo: "/partners/prudential.png" },
-    { name: "MetLife", logo: "/partners/metlife.png" },
-    { name: "AIG", logo: "/partners/aig.png" },
+    { name: "Liason", logo: "/partners/liason.png" },
+    { name: "Covara", logo: "/partners/covara.png" },
+    { name: "Imana", logo: "/partners/imana.png" },
+    { name: "Waumini", logo: "/partners/waumini.png" },
+    { name: "AIBK", logo: "/partners/aibk.png" },
   ];
 
   const [showAllProducts, setShowAllProducts] = useState(false);
@@ -187,6 +189,8 @@ export default function Home() {
     hidden: { opacity: 0, y: 30 },
     visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.15 } }),
   };
+
+  const [isLoading, setIsLoading] = useState(true);
 
   // Cycle testimonials every 5 seconds
   useEffect(() => {
@@ -214,6 +218,18 @@ export default function Home() {
     window.addEventListener("resize", updateLength);
     return () => window.removeEventListener("resize", updateLength);
   }, []);
+
+  useEffect(() => {
+    // Simulate a loading delay (e.g., API call or heavy assets)
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500); // Loader visible for ~2.5 seconds
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <LiquidRingLoader />;
+  }
 
   return (
     <section className="flex flex-col gap-16 w-full overflow-visible">
@@ -279,7 +295,7 @@ export default function Home() {
       {/* Products Section */}
       <Card
         shadow="lg"
-        radius="xl"
+        radius="lg"
         className="w-full relative overflow-visible 
              bg-gradient-to-br from-primary/95 via-primary/80 to-danger/90 
              text-white rounded-3xl"
@@ -547,15 +563,17 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 shadow-lg hover:shadow-2xl hover:scale-105 transition"
+                className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 shadow-lg hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-500 ease-out flex items-center justify-center w-full h-28"
               >
-                <Image
-                  src={partner.logo}
-                  alt={partner.name}
-                  width={140}
-                  height={60}
-                  className="grayscale hover:grayscale-0 transition duration-300"
-                />
+                <div className="w-full h-full flex items-center justify-center">
+                  <Image
+                    src={partner.logo}
+                    alt={partner.name}
+                    width={140}
+                    height={60}
+                    className="object-contain w-full h-full grayscale hover:grayscale-0 transition duration-500 ease-out"
+                  />
+                </div>
               </motion.div>
             ))}
           </CardBody>
@@ -620,17 +638,36 @@ export default function Home() {
       </Card>
 
       {/* FAQ */}
-      < Card
+      <Card
         shadow="lg"
         radius="lg"
-        className="w-full bg-primary text-white py-16 px-6 md:px-12"
+        className="
+    w-full relative overflow-hidden
+    py-16 px-6 md:px-12
+    text-white
+    rounded-3xl
+    border border-white/10
+    bg-white/10
+    backdrop-blur-2xl
+    shadow-[0_8px_30px_rgba(0,0,0,0.2)]
+  "
       >
-        {/* Animated Header */}
+        {/* 🌌 Background Image with Gradient Overlay */}
+        <Image
+          src="/images/faq-bg.png"
+          alt="FAQ Background"
+          fill
+          priority
+          className="object-cover opacity-40 absolute inset-0 -z-10"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/70 via-danger/50 to-primary/70 -z-10" />
+
+        {/* 🔹 Animated Header */}
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl font-extrabold text-center text-white mb-12"
+          className="text-3xl md:text-4xl font-extrabold text-center mb-12 drop-shadow-lg"
         >
           Frequently Asked Questions
         </motion.h2>
@@ -664,48 +701,48 @@ export default function Home() {
                 title={
                   <span
                     className="
-            font-bold 
-            group-data-[open=false]:text-black 
-            group-data-[open=true]:text-white
-          "
+                font-bold 
+                group-data-[open=false]:text-white/90 
+                group-data-[open=true]:text-white
+              "
                   >
                     {faq.q}
                   </span>
                 }
                 className={`
-        group relative
-        [&[data-open='true']]:bg-danger
-        [&[data-open='false']]:bg-primary
-        transition-all duration-500
-      `}
+            group relative
+            [&[data-open='true']]:bg-gradient-to-r from-danger to-primary
+            [&[data-open='false']]:bg-white/10
+            backdrop-blur-xl
+            transition-all duration-500
+            border border-white/10
+          `}
               >
-                {/* 🔹 Hover Preview Tooltip */}
+                {/* 🔹 Hover Tooltip Preview */}
                 <motion.div
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 0, y: 5 }}
                   whileInView={{ opacity: 0, y: 5 }}
                   transition={{ duration: 0.3 }}
                   className="
-          absolute left-1/2 -translate-x-1/2 -top-12
-          px-3 py-2 
-          bg-black text-white text-xs rounded-lg shadow-lg
-          max-w-[250px] sm:max-w-[300px] md:max-w-[400px]
-          text-center z-50
-          opacity-0 pointer-events-none
-          group-hover:opacity-100 group-hover:translate-y-0
-          transition-all duration-300
-        "
+              absolute left-1/2 -translate-x-1/2 -top-12
+              px-3 py-2 
+              bg-black/70 text-white text-xs rounded-lg shadow-lg
+              max-w-[250px] sm:max-w-[300px] md:max-w-[400px]
+              text-center z-50
+              opacity-0 pointer-events-none
+              group-hover:opacity-100 group-hover:translate-y-0
+              transition-all duration-300
+            "
                 >
-                  {faq.a.length > 80
-                    ? faq.a.substring(0, 80) + "..."
-                    : faq.a}
+                  {faq.a.length > 80 ? faq.a.substring(0, 80) + "..." : faq.a}
                 </motion.div>
 
                 <motion.p
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="text-white"
+                  className="text-white/90"
                 >
                   {faq.a}
                 </motion.p>

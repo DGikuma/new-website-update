@@ -84,7 +84,7 @@ export default function CareersPage() {
     ];
 
     return (
-        <main className="relative w-screen min-h-screen overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
+        <main className="relative w-full min-h-screen overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
             {/* ✨ Animated Hybrid Background */}
             <svg
                 className="absolute inset-0 -z-10 w-full h-full opacity-[0.15]"

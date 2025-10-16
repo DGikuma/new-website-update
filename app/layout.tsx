@@ -98,9 +98,11 @@ export default function RootLayout({
 
             {/* ✅ Frosted main content */}
             <main
-              className="container mx-auto max-w-7xl pt-16 px-6 flex-grow
-              bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10
-              shadow-[0_8px_30px_rgba(0,0,0,0.2)]"
+              className="relative flex-grow w-full min-h-[calc(100vh-4rem)]
+              bg-white/10 dark:bg-black/20 backdrop-blur-xl
+              border-t border-white/10
+              shadow-[0_8px_30px_rgba(0,0,0,0.2)]
+              overflow-hidden"
             >
               {children}
             </main>
