@@ -22,14 +22,22 @@ import clsx from "clsx";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, SearchIcon, Logo } from "@/components/icons";
 
+import { ChevronRightIcon } from "@heroicons/react/24/solid";
+
 // Animation variants for dropdowns
 const submenuVariants = {
   hidden: { opacity: 0, y: -10 },
   visible: { opacity: 1, y: 0 },
 };
 
-// Fixed MobileMegaMenu with accordion behavior
-const MobileMegaMenu = ({ megaMenus, setOpenMenu }: any) => {
+// ✅ MobileMegaMenu component (fixed + scrollable internally)
+const MobileMegaMenu = ({
+  megaMenus,
+  closeDrawer,
+}: {
+  megaMenus: any;
+  closeDrawer: () => void;
+}) => {
   const [openTop, setOpenTop] = useState<string | null>(null);
   const [openColumns, setOpenColumns] = useState<{ [key: string]: number | null }>({});
 
@@ -43,114 +51,114 @@ const MobileMegaMenu = ({ megaMenus, setOpenMenu }: any) => {
   ];
 
   return (
-    <div className="mx-4 mt-2 flex flex-col gap-2">
+    <div className="h-full overflow-y-auto p-6 flex flex-col gap-4 bg-gradient-to-br from-primary/95 via-secondary/90 to-primary/80 backdrop-blur-xl text-white">
       {topLevelItems.map((item) => {
         const mega = !!item.megaItems;
+        const isOpen = openTop === item.label;
 
         return (
-          <div key={item.label} className="flex flex-col">
-            {/* Top-level button */}
+          <motion.div key={item.label} layout>
+            {/* Top-level link */}
             <button
-              onClick={() => setOpenTop(openTop === item.label ? null : item.label)}
+              onClick={() => {
+                if (!mega) {
+                  closeDrawer();
+                } else {
+                  setOpenTop(isOpen ? null : item.label);
+                }
+              }}
               className={clsx(
-                "flex justify-between items-center w-full px-4 py-2 text-left text-foreground bg-default-100 rounded-md",
-                mega ? "font-semibold" : "font-medium"
+                "w-full flex justify-between items-center py-3 text-left font-semibold text-white text-base tracking-wide transition-all duration-300 border-b border-white/10",
+                "hover:text-white hover:border-white"
               )}
             >
-              {item.label}
+              <span className="flex items-center gap-2">
+                {item.label}
+              </span>
               {mega && (
-                <span
-                  className={clsx(
-                    "transition-transform duration-300",
-                    openTop === item.label ? "rotate-180" : "rotate-0"
-                  )}
+                <motion.span
+                  animate={{ rotate: isOpen ? 90 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-white"
                 >
-                  ▼
-                </span>
+                  <ChevronRightIcon className="w-5 h-5 text-white font-bold drop-shadow-[0_1px_2px_rgba(255,255,255,0.4)]" />
+                </motion.span>
+
               )}
             </button>
 
-            {/* Mega menu columns */}
-            {mega && (
-              <AnimatePresence>
-                {openTop === item.label && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="flex flex-col gap-1 mt-1 pl-4 border-l border-default-200"
-                  >
-                    {item.megaItems.map((col: any, colIdx: number) => (
-                      <div key={colIdx} className="flex flex-col gap-1">
-                        {/* Column button */}
+            {/* Submenu section */}
+            <AnimatePresence>
+              {mega && isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.35 }}
+                  className="pl-4 border-l-2 border-white/20 mt-2 mb-3"
+                >
+                  {item.megaItems.map((col: any, colIdx: number) => {
+                    const colOpen = openColumns[item.label] === colIdx;
+                    return (
+                      <motion.div key={colIdx} layout className="mb-2">
                         <button
                           onClick={() =>
                             setOpenColumns((prev) => ({
                               ...prev,
-                              [item.label]:
-                                prev[item.label] === colIdx ? null : colIdx,
+                              [item.label]: colOpen ? null : colIdx,
                             }))
                           }
-                          className="flex justify-between items-center px-2 py-1 rounded-md text-sm font-semibold text-primary bg-default-100"
+                          className="flex justify-between items-center w-full text-sm font-medium text-white/80 py-2 hover:text-white transition-all"
                         >
                           {col.title}
-                          <span
-                            className={clsx(
-                              "transition-transform duration-300",
-                              openColumns[item.label] === colIdx
-                                ? "rotate-180"
-                                : "rotate-0"
-                            )}
+                          <motion.span
+                            animate={{ rotate: colOpen ? 90 : 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="text-white"
                           >
-                            ▼
-                          </span>
+                            <ChevronRightIcon className="w-4 h-4 text-white font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]" />
+                          </motion.span>
+
                         </button>
 
-                        {/* Column links */}
                         <AnimatePresence>
-                          {openColumns[item.label] === colIdx && (
+                          {colOpen && (
                             <motion.div
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
-                              className="flex flex-col gap-1 mt-1 pl-4"
+                              transition={{ duration: 0.3 }}
+                              className="pl-3 border-l border-white/10 flex flex-col gap-1 mt-1"
                             >
                               {col.links.map((link: any) => (
                                 <Link
                                   key={link.href}
                                   href={link.href}
-                                  className="px-2 py-1 rounded hover:bg-default-200 transition-colors text-sm"
-                                  onClick={() => setOpenMenu(null)}
+                                  onClick={closeDrawer}
+                                  className="py-1 text-sm text-white/70 hover:text-white hover:font-semibold transition-all duration-200 relative group"
                                 >
-                                  {link.label}
+                                  <span>{link.label}</span>
+                                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300" />
                                 </Link>
                               ))}
                             </motion.div>
                           )}
                         </AnimatePresence>
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            )}
-
-            {/* Regular menu item */}
-            {!mega && (
-              <NavbarMenuItem>
-                <Link
-                  color="foreground"
-                  href={item.href}
-                  size="lg"
-                  onClick={() => setOpenMenu(null)}
-                >
-                  {item.label}
-                </Link>
-              </NavbarMenuItem>
-            )}
-          </div>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         );
       })}
+
+      {/* Footer */}
+      <div className="mt-10 text-center text-sm text-white/70">
+        © {new Date().getFullYear()} <span className="font-semibold text-white">Birdview Insurance</span>
+        <p className="text-white/60 mt-1">Trusted Protection. Global Reach.</p>
+      </div>
     </div>
   );
 };
@@ -159,13 +167,15 @@ export const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = (menu: string) => {
-    setOpenMenu(openMenu === menu ? null : menu);
-  };
+  // ✅ Disable body scroll when drawer is open
+  useEffect(() => {
+    document.body.style.overflow = isDrawerOpen ? "hidden" : "auto";
+  }, [isDrawerOpen]);
 
-  // Close menus on outside click or Escape key
+  // Close menus on outside click or ESC
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -173,9 +183,11 @@ export const Navbar = () => {
       }
     };
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpenMenu(null);
+      if (event.key === "Escape") {
+        setOpenMenu(null);
+        setIsDrawerOpen(false);
+      }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEsc);
     return () => {
@@ -224,6 +236,30 @@ export const Navbar = () => {
       },
       {
         title: "Financial & Education",
+        links: [
+          { label: "Education Insurance", href: "/services/education" },
+          { label: "Retirement Plans", href: "/services/retirement" },
+          { label: "Other Plans", href: "/services/other" },
+        ],
+      },
+      {
+        title: "Local Forms",
+        links: [
+          { label: "Education Insurance", href: "/services/education" },
+          { label: "Retirement Plans", href: "/services/retirement" },
+          { label: "Other Plans", href: "/services/other" },
+        ],
+      },
+      {
+        title: "Diaspora Forms",
+        links: [
+          { label: "Education Insurance", href: "/services/education" },
+          { label: "Retirement Plans", href: "/services/retirement" },
+          { label: "Other Plans", href: "/services/other" },
+        ],
+      },
+      {
+        title: "Downloads & Resources",
         links: [
           { label: "Education Insurance", href: "/services/education" },
           { label: "Retirement Plans", href: "/services/retirement" },
@@ -352,6 +388,9 @@ export const Navbar = () => {
     ],
   };
 
+  // helper to close drawer
+  const closeDrawer = () => setIsDrawerOpen(false);
+
   return (
     <>
       {/* Topbar */}
@@ -367,7 +406,6 @@ export const Navbar = () => {
             <span className="font-semibold text-primary"></span>
           </Link>
         </div>
-
 
         {/* Center: Menu links */}
         <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-wrap gap-4 justify-center">
@@ -385,7 +423,7 @@ export const Navbar = () => {
         {/* Right: Portals dropdown */}
         <div className="flex items-center gap-4 relative flex-shrink-0 ml-auto" ref={menuRef}>
           <Button
-            onPress={() => toggleMenu("portals")}
+            onPress={() => setOpenMenu(openMenu === "portals" ? null : "portals")}
             className="bg-danger text-white font-semibold px-4 py-2 rounded-md transition-all duration-300"
           >
             Portals
@@ -434,13 +472,13 @@ export const Navbar = () => {
       </div>
 
       {/* HeroUI Navbar */}
-      < HeroUINavbar
+      <HeroUINavbar
         maxWidth="xl"
         position="sticky"
         className="bg-danger text-white shadow-md z-50"
       >
         {/* Left side (brand + nav items) */}
-        < NavbarContent className="basis-1/5 md:basis-full" justify="start" >
+        <NavbarContent className="basis-1/5 md:basis-full" justify="start">
           <NavbarBrand as="li" className="max-w-fit md:hidden">
             <NextLink
               className="flex justify-start items-center gap-2 bg-white px-2 py-1 rounded-md shadow-md"
@@ -454,8 +492,8 @@ export const Navbar = () => {
             </NextLink>
           </NavbarBrand>
 
-          {/* Desktop Nav Items */}
-          <ul className="hidden lg:flex gap-6 justify-start ml-4 relative">
+          {/* Desktop / Tablet Nav Items (visible from md upwards) */}
+          <ul className="hidden md:flex gap-6 justify-start ml-4 relative">
             {[
               { label: "Home", href: "/" },
               { label: "Services", href: "/services", mega: true, megaItems: megaMenus.Services },
@@ -468,7 +506,7 @@ export const Navbar = () => {
               return (
                 <NavbarItem key={item.href} className="relative group">
                   <button
-                    onClick={() => item.mega && toggleMenu(item.label)}
+                    onClick={() => item.mega && setOpenMenu(openMenu === item.label ? null : item.label)}
                     className={clsx(
                       "flex items-center gap-1 text-white relative transition-colors duration-300",
                       isActive ? "font-semibold" : "font-medium"
@@ -537,31 +575,62 @@ export const Navbar = () => {
               );
             })}
           </ul>
-        </NavbarContent >
+        </NavbarContent>
 
-        {/* Right side */}
-        < NavbarContent className="hidden md:flex basis-1/5 md:basis-full" justify="end" >
+        {/* Right side (search + retrieve + theme) visible md+ */}
+        <NavbarContent className="hidden md:flex basis-1/5 md:basis-full" justify="end">
           <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
           <NavbarItem className="hidden lg:flex">{retrieveInput}</NavbarItem>
           <NavbarItem className="hidden md:flex gap-2">
             <ThemeSwitch />
           </NavbarItem>
-        </NavbarContent >
+        </NavbarContent>
 
-        {/* Mobile menu toggle */}
-        < NavbarContent className="md:hidden basis-1 pl-4" justify="end" >
+        {/* Mobile icons + Hamburger (visible on small screens only) */}
+        <NavbarContent className="md:hidden basis-1 pl-4" justify="end">
           <Link isExternal aria-label="Github" href="https://github.com/">
             <GithubIcon className="text-white" />
           </Link>
           <ThemeSwitch />
-          <NavbarMenuToggle />
-        </NavbarContent >
+          {/* Mobile menu toggle */}
+          <button
+            aria-label={isDrawerOpen ? "Close menu" : "Open menu"}
+            onClick={() => setIsDrawerOpen((s) => !s)}
+            className="ml-2 p-2 rounded-md hover:bg-white/10 transition text-white"
+          >
+            {/* simple hamburger / close icon — keep your own icon if you prefer */}
+            {isDrawerOpen ? "✕" : "☰"}
+          </button>
+        </NavbarContent>
+      </HeroUINavbar>
 
-        {/* Mobile menu */}
-        < NavbarMenu >
-          <MobileMegaMenu megaMenus={megaMenus} setOpenMenu={setOpenMenu} />
-        </NavbarMenu >
-      </HeroUINavbar >
+      {/* Mobile Fullscreen Drawer */}
+      <AnimatePresence>
+        {isDrawerOpen && (
+          <>
+            {/* Dim background */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black z-30 backdrop-blur-sm"
+              onClick={closeDrawer}
+            />
+
+            {/* Drawer content */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 180, damping: 25 }}
+              className="fixed top-[120px] left-0 right-0 bottom-0 z-40 rounded-tr-3xl overflow-hidden flex flex-col"
+            >
+              <MobileMegaMenu megaMenus={megaMenus} closeDrawer={closeDrawer} />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
     </>
   );
 };
