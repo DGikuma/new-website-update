@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     Tabs,
     Tab,
@@ -13,21 +13,27 @@ import {
     ModalBody,
     Image,
 } from "@heroui/react";
-import { motion } from "framer-motion";
-import { Contact } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play } from "lucide-react";
 import MediaEnquiryCard from "../media_enquiry/page";
 
 export default function Press() {
     const [activeTab, setActiveTab] = useState(0);
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any>(null);
-    const [imageModalOpen, setImageModalOpen] = useState(false);
-    const [selectedImage, setSelectedImage] = useState("");
+    const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+    const [blurActive, setBlurActive] = useState(false);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
 
-    const handleImageClick = (img: string) => {
-        setSelectedImage(img);
-        setImageModalOpen(true);
-    };
+    const [particles] = useState(
+        Array.from({ length: 25 }).map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            size: Math.random() * 4 + 1,
+            duration: Math.random() * 6 + 4,
+        }))
+    );
 
     const handleOpen = (item: any) => {
         setSelectedItem(item);
@@ -37,7 +43,20 @@ export default function Press() {
     const handleClose = () => {
         setOpen(false);
         setSelectedItem(null);
+        setSelectedVideo(null);
+        setBlurActive(false);
     };
+
+    const handleVideoEnd = () => {
+        setBlurActive(true);
+        setTimeout(() => {
+            handleClose();
+        }, 1500);
+    };
+
+    useEffect(() => {
+        if (selectedVideo && videoRef.current) videoRef.current.play();
+    }, [selectedVideo]);
 
     const TABS = [
         {
@@ -136,38 +155,19 @@ export default function Press() {
                 }
             ],
         },
-        {
-            label: "Contact for Media Inquiries",
-            data: [
-                {
-                    title: "Media Contact",
-                    description: (
-                        <MediaEnquiryCard />
-                    ),
-                },
-            ],
-        },
     ];
 
     return (
         <>
-            {/* 🌟 Hero Banner - Premium Media Center Style */}
+            {/* 🏔️ Hero Section */}
             <div className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-
-                {/* Background Image */}
                 <div
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{
-                        backgroundImage: "url('/images/media.png')",
-                        backgroundAttachment: "fixed",
-                    }}
+                    style={{ backgroundImage: "url('/images/media.png')", backgroundAttachment: "fixed" }}
                 />
-
-                {/* Layered Overlays for Cinematic Depth */}
                 <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-primary/40 to-red-700/40" />
                 <div className="absolute inset-0 backdrop-blur-[2px]" />
 
-                {/* Subtle Animated Gradient Sweep */}
                 <motion.div
                     className="absolute inset-0 bg-[linear-gradient(110deg,transparent_40%,rgba(255,255,255,0.15)_50%,transparent_60%)]"
                     animate={{ backgroundPositionX: ["0%", "200%"] }}
@@ -175,51 +175,32 @@ export default function Press() {
                     style={{ backgroundSize: "200% 100%" }}
                 />
 
-                {/* Floating Light Particles */}
                 <div className="absolute inset-0 overflow-hidden">
-                    {Array.from({ length: 30 }).map((_, i) => (
+                    {particles.map((p) => (
                         <motion.span
-                            key={i}
+                            key={p.id}
                             className="absolute rounded-full bg-white/20 blur-sm"
                             style={{
-                                top: `${Math.random() * 100}%`,
-                                left: `${Math.random() * 100}%`,
-                                width: `${Math.random() * 4 + 1}px`,
-                                height: `${Math.random() * 4 + 1}px`,
+                                top: p.top,
+                                left: p.left,
+                                width: `${p.size}px`,
+                                height: `${p.size}px`,
                             }}
-                            animate={{
-                                y: [0, -30, 0],
-                                opacity: [0.1, 0.6, 0.1],
-                            }}
-                            transition={{
-                                duration: Math.random() * 6 + 4,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                            }}
+                            animate={{ y: [0, -30, 0], opacity: [0.1, 0.6, 0.1] }}
+                            transition={{ duration: p.duration, repeat: Infinity, ease: "easeInOut" }}
                         />
                     ))}
                 </div>
 
-                {/* Logo Watermark - Pulsating Glow */}
                 <motion.div
                     initial={{ opacity: 0.05, scale: 1 }}
-                    animate={{
-                        opacity: [0.05, 0.15, 0.05],
-                        scale: [1, 1.05, 1],
-                    }}
+                    animate={{ opacity: [0.05, 0.15, 0.05], scale: [1, 1.05, 1] }}
                     transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
                     className="absolute inset-0 flex items-center justify-center"
                 >
-                    <Image
-                        src="/logo-light.svg"
-                        alt="Birdview Logo"
-                        width={380}
-                        height={380}
-                        className="object-contain"
-                    />
+                    <Image src="/logo-light.svg" alt="Birdview Logo" width={380} height={380} className="object-contain" />
                 </motion.div>
 
-                {/* Central Hero Text */}
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -240,21 +221,13 @@ export default function Press() {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.8, duration: 1 }}
                     >
-                        Explore our latest stories, news features, and brand updates — all in one modern, immersive hub.
+                        Explore our latest stories, news features, and brand updates — all in one immersive hub.
                     </motion.p>
-
-                    {/* Decorative Divider Line */}
-                    <motion.div
-                        className="mt-6 h-[2px] w-32 mx-auto bg-gradient-to-r from-primary via-white/80 to-red-600 rounded-full"
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: 1 }}
-                        transition={{ delay: 1.2, duration: 0.8 }}
-                    />
                 </motion.div>
             </div>
 
-            {/* Tabs Section */}
-            <div className="max-w-7xl mx-auto py-12 px-6 md:px-12">
+            {/* 📰 Tabs + Cards */}
+            <div className="max-w-7xl mx-auto py-16 px-6 md:px-10 lg:px-16">
                 <Tabs
                     aria-label="Press Tabs"
                     selectedKey={activeTab}
@@ -267,17 +240,13 @@ export default function Press() {
                     ))}
                 </Tabs>
 
-                {/* Cards */}
                 <motion.div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center"
                     initial="hidden"
                     animate="visible"
                     variants={{
                         hidden: { opacity: 0 },
-                        visible: {
-                            opacity: 1,
-                            transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-                        },
+                        visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.3 } },
                     }}
                 >
                     {TABS[activeTab].data.map((item, i) => (
@@ -285,134 +254,127 @@ export default function Press() {
                             key={i}
                             variants={{
                                 hidden: { opacity: 0, y: 40 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
                             }}
-                            whileHover={{
-                                scale: 1.04,
-                                rotateX: 2,
-                                rotateY: -2,
-                                boxShadow: "0 15px 30px rgba(255,0,0,0.2)",
-                            }}
+                            whileHover={{ scale: 1.04, boxShadow: "0 15px 30px rgba(255,0,0,0.2)" }}
                             className="w-full max-w-sm"
                         >
                             <Card
-                                isPressable
-                                onPress={() => handleOpen(item)}
                                 shadow="sm"
-                                className="h-[420px] flex flex-col justify-between rounded-2xl border border-gray-100 
-          hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 
-          backdrop-blur-sm bg-white/90"
+                                className="h-[420px] flex flex-col justify-between rounded-2xl border border-gray-100 hover:shadow-2xl transition-all duration-500 backdrop-blur-sm bg-white/90 dark:bg-gray-900/90"
                             >
-                                {/* Image */}
                                 {item.image && (
                                     <div className="h-48 w-full overflow-hidden rounded-t-2xl">
-                                        <motion.div
-                                            whileHover={{ scale: 1.1 }}
-                                            transition={{ duration: 0.8, ease: "easeOut" }}
-                                            className="h-full w-full"
-                                        >
-                                            <Image
-                                                alt={item.title}
-                                                src={item.image}
-                                                radius="none"
-                                                className="h-full w-full object-cover"
-                                            />
+                                        <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.8 }}>
+                                            <Image src={item.image} alt={item.title} radius="none" className="h-full w-full object-cover" />
                                         </motion.div>
                                     </div>
                                 )}
 
-                                {/* Card Content */}
                                 <div className="flex flex-col flex-1 justify-between p-4">
                                     <CardHeader className="flex flex-col items-start gap-1 p-0">
-                                        <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
+                                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white line-clamp-2">
                                             {item.title}
                                         </h3>
                                     </CardHeader>
 
-                                    <CardBody className="p-0 mt-2 text-gray-600 text-sm line-clamp-3 flex-grow">
+                                    <CardBody className="p-0 mt-2 text-gray-600 dark:text-gray-300 text-sm line-clamp-3 flex-grow">
                                         {item.description}
                                     </CardBody>
 
-                                    {/* Premium “Read More” Button with Birdview Gradient */}
-                                    <motion.button
-                                        aria-label="Read more"
-                                        initial="rest"
-                                        whileHover="hover"
-                                        animate="rest"
-                                        className="group mt-4 inline-flex items-center justify-center gap-3 rounded-full bg-primary text-white px-5 py-2.5 font-semibold transition-all duration-300 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                                    >
-                                        <span className="relative z-10">Read More</span>
-
-                                        <motion.span
-                                            className="relative z-10 inline-flex"
-                                            variants={{
-                                                rest: { x: 0 },
-                                                hover: { x: 10 }, // slides right when parent is hovered
-                                            }}
-                                            transition={{ type: "spring", stiffness: 400, damping: 22 }}
+                                    {item.video && (
+                                        <motion.button
+                                            aria-label="Play video"
+                                            onClick={() => handleOpen(item)}
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="group mt-4 inline-flex items-center justify-center gap-3 rounded-full bg-primary text-white px-5 py-2.5 font-semibold transition-all duration-300 hover:bg-red-600"
                                         >
-                                            {/* Crisp chevron-right SVG */}
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </motion.span>
-                                    </motion.button>
-
+                                            <motion.div
+                                                className="flex items-center justify-center"
+                                                animate={{ rotate: [0, 10, -10, 0] }}
+                                                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                                            >
+                                                <Play className="w-4 h-4 group-hover:scale-125 transition-transform duration-300" />
+                                            </motion.div>
+                                            <span>Play</span>
+                                        </motion.button>
+                                    )}
                                 </div>
                             </Card>
                         </motion.div>
                     ))}
                 </motion.div>
-
             </div>
 
-            {/* Video/Image Modal */}
+            {/* 💬 Media & Press Contact Section */}
+            <section className="relative w-full py-20 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1 }}
+                    className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-red-500/5 pointer-events-none"
+                />
+
+                <div className="relative max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+                    <div className="text-center mb-14">
+                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                            Media & Press
+                        </h2>
+                        <p className="mt-3 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                            Access our press kits, interview opportunities, and the latest corporate updates from Birdview Microinsurance.
+                        </p>
+                    </div>
+
+                    <div className="w-full">
+                        <MediaEnquiryCard />
+                    </div>
+                </div>
+            </section>
+
+            {/* 🎬 Video Modal */}
             <Modal isOpen={open} onOpenChange={handleClose} size="4xl" scrollBehavior="inside">
                 <ModalContent>
-                    <ModalHeader className="font-bold text-lg text-gray-800">
-                        {selectedItem?.title}
-                    </ModalHeader>
+                    <ModalHeader className="font-bold text-lg text-gray-800">{selectedItem?.title}</ModalHeader>
                     <ModalBody>
-                        {selectedItem?.video ? (
-                            <div
-                                dangerouslySetInnerHTML={{ __html: selectedItem.video }}
-                                className="rounded-xl overflow-hidden mb-4"
-                            />
-                        ) : selectedItem?.image ? (
-                            <Image
-                                src={selectedItem.image}
-                                alt={selectedItem.title}
-                                className="rounded-xl mb-4 cursor-pointer"
-                                onClick={() => handleImageClick(selectedItem.image)}
-                            />
-                        ) : null}
-
-                        {selectedItem?.content ? (
-                            <div
-                                dangerouslySetInnerHTML={{ __html: selectedItem.content }}
-                                className="text-gray-700 leading-relaxed"
-                            />
-                        ) : (
-                            <p className="text-gray-600 leading-relaxed">
-                                {selectedItem?.details || selectedItem?.description}
-                            </p>
+                        {selectedItem?.video && (
+                            <div dangerouslySetInnerHTML={{ __html: selectedItem.video }} className="rounded-xl overflow-hidden mb-4" />
+                        )}
+                        {selectedItem?.description && (
+                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{selectedItem.description}</p>
                         )}
                     </ModalBody>
                 </ModalContent>
             </Modal>
 
-            {/* Image Modal */}
-            <Modal isOpen={imageModalOpen} onOpenChange={setImageModalOpen}>
-                <ModalContent>
-                    <ModalBody className="flex justify-center items-center">
-                        <Image
-                            src={selectedImage}
-                            alt="Selected"
-                            className="max-h-[80vh] rounded-xl object-contain"
-                        />
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            {/* ⚡ Cinematic Outro */}
+            <AnimatePresence>
+                {selectedVideo && (
+                    <motion.div
+                        key="video-modal"
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="relative w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl"
+                        >
+                            <video
+                                ref={videoRef}
+                                src={selectedVideo}
+                                onEnded={handleVideoEnd}
+                                controls
+                                className="w-full h-auto rounded-2xl"
+                            />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 }

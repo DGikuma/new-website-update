@@ -97,8 +97,8 @@ export default function Home() {
     { title: "Medical", img: "/assets/productsPhotos/medical.png", desc: "Our medical insurance products include inpatient (With In-built Maternity), Outpatient, Dental, and Optical." },
     { title: "Hospital Cash", img: "/assets/productsPhotos/hospital-cash.png", desc: "Daily payments for insureds admitted in hospital for up to a maximum of 10 payments per year or admission." },
     { title: "Personal Accident", img: "/assets/productsPhotos/personal-accident.png", desc: "Plan provides fixed sum payout on death, permanent disablement, and medical expenses arising because of an accident." },
-    { title: "Motorbike/Bodaboda Insurance Application", img: "/assets/productsPhotos/motorbike.jpg", desc: "Covers your motorbike against damage, theft, or loss, including third-party liability." },
-    { title: "TukuTuk Insurance Application", img: "/assets/productsPhotos/tuktuk.png", desc: "This insurance offers both Third Party and Comprehensive cover—protecting against damage or loss, third party liability." },
+    { title: "Motorbike/Bodaboda Insurance Welfare Cover", img: "/assets/productsPhotos/motorbike.jpg", desc: "Covers your motorbike against damage, theft, or loss, including third-party liability." },
+    { title: "TukTuk Insurance Welfare Cover", img: "/assets/productsPhotos/tuktuk.png", desc: "This insurance offers both Third Party and Comprehensive cover—protecting against damage or loss, third party liability." },
     { title: "Probation Guard", img: "/assets/productsPhotos/prob_guard.png", desc: "This enhancement to our existing Evacuation and Repatriation Cover includes a new component." },
     { title: "AQUABIMA Insurance", img: "/assets/productsPhotos/aqua_culture.jpeg", desc: "AQUABIMA is a tailored insurance solution for cage and pond farmers, ensuring guaranteed returns on investment." },
   ];
@@ -276,13 +276,13 @@ export default function Home() {
             className="flex gap-4 mt-8 flex-wrap justify-center"
           >
             <Link
-              href={siteConfig.links.getQuote || "#"}
+              href={(siteConfig.links as any)?.getQuote || "#"}
               className="relative px-6 py-3 rounded-full text-white font-semibold bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-all duration-500 shadow-lg"
             >
               Get Covered Today
             </Link>
             <Link
-              href={siteConfig.links.services || "#"}
+              href={(siteConfig.links as any)?.services || "#"}
               className="relative px-6 py-3 rounded-full text-white font-semibold bg-red-600 hover:bg-red-700 hover:scale-105 transition-all duration-500 shadow-lg"
             >
               Explore Plans
@@ -581,7 +581,7 @@ export default function Home() {
       </Card>
 
       {/* Quick Quote CTA */}
-      <div className="w-full bg-gradient-to-r from-primary to-violet py-24 text-center text-white relative z-20">
+      <div className="w-full bg-gradient-to-r from-primary to-violet to-danger py-24 text-center text-white relative z-20">
         <h2 className="text-3xl md:text-5xl font-bold mb-6">
           Ready to Protect What Matters Most?
         </h2>
@@ -590,13 +590,13 @@ export default function Home() {
         </p>
         <div className="flex justify-center gap-6 flex-wrap">
           <Link
-            href={siteConfig.links.getQuote || "https://quote.birdviewinsurance.com/"}
+            href={(siteConfig.links as any)?.getQuote || "https://quote.birdviewinsurance.com/"}
             className="px-8 py-4 rounded-full bg-primary text-white font-semibold shadow-lg hover:bg-primary/90 transition"
           >
             Get a Quote
           </Link>
           <Link
-            href={siteConfig.links.contact || "#"}
+            href={(siteConfig.links as any)?.contact || "#"}
             className="px-8 py-4 rounded-full bg-danger text-white font-semibold shadow-lg hover:bg-danger/90 transition"
           >
             Contact Us

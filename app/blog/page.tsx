@@ -1,9 +1,10 @@
 "use client";
 
-import { Card, CardHeader, CardBody } from "@heroui/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useState } from "react";
+import CategoryBar from "./CategoryBar";
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { motion, AnimatePresence } from "framer-motion";
 
 const posts = [
   {
@@ -161,91 +162,74 @@ const posts = [
   },
 ];
 
-export default function Blog() {
-  const [showAll, setShowAll] = useState(false);
+export default function BlogPage() {
+  const [activeCategory, setActiveCategory] = useState("All");
 
-  const initialPosts = posts.slice(0, 6);
-  const remainingPosts = posts.slice(6);
+  const filteredPosts = useMemo(() => {
+    if (activeCategory === "All") return posts;
+    return posts.filter((post) => post.category === activeCategory);
+  }, [activeCategory]);
 
   return (
-    <main className="relative min-h-screen px-6 py-20 bg-pr">
-      {/* Corporate Background Image */}
+    <section className="relative w-screen max-w-none bg-background overflow-hidden">
+      {/* Hero Section */}
+      <div className="relative h-[40vh] flex flex-col items-center justify-center text-center text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-700 to-red-600"></div>
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative z-10">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
+            Our Insights & Updates
+          </h1>
+          <p className="mt-3 text-lg text-white/90">
+            Explore our latest stories, news, and innovations.
+          </p>
+        </div>
+      </div>
 
+      {/* Floating Category Bar */}
+      <CategoryBar activeCategory={activeCategory} onSelect={setActiveCategory} />
 
-      <h1 className="text-5xl font-bold text-center text-white mb-12 relative z-10">
-        Blog & Insights
-      </h1>
-
-      {/* Blog Posts Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto relative z-10">
-        {initialPosts.map((post, i) => (
-          <BlogCard key={i} post={post} index={i} />
-        ))}
-
-        {/* Animate remaining posts with slide-down */}
-        <AnimatePresence initial={false}>
-          {showAll &&
-            remainingPosts.map((post, i) => (
-              <motion.div
-                key={post.slug}
-                initial={{ opacity: 0, height: 0, y: -20 }}
-                animate={{ opacity: 1, height: "auto", y: 0 }}
-                exit={{ opacity: 0, height: 0, y: -20 }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-              >
-                <BlogCard post={post} index={i + 6} />
-              </motion.div>
-            ))}
+      {/* Posts Grid */}
+      <div className="max-w-7xl mx-auto py-12 px-4 md:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <AnimatePresence mode="wait">
+          {filteredPosts.map((post) => (
+            <motion.div
+              key={post.slug}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <Link href={`/blog/${post.slug}`}>
+                <Card
+                  isHoverable
+                  className="border border-primary/30 hover:border-primary transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                >
+                  <CardHeader className="p-0">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-52 object-cover rounded-t-xl"
+                    />
+                  </CardHeader>
+                  <CardBody className="p-5">
+                    <h3 className="text-lg font-semibold text-primary mb-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-300 mb-3">
+                      {post.excerpt}
+                    </p>
+                    <p className="text-xs text-neutral-500">
+                      {post.date} ·{" "}
+                      <span className="font-medium">{post.category}</span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Link>
+            </motion.div>
+          ))}
         </AnimatePresence>
       </div>
-
-      {/* Show More / Show Less Button */}
-      <div className="flex justify-center mt-12 relative z-10">
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-full shadow-lg transition"
-        >
-          {showAll ? "Show Less" : "Show More"}
-          <motion.span
-            animate={{ rotate: showAll ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-            className="inline-block"
-          >
-            ▼
-          </motion.span>
-        </button>
-      </div>
-    </main>
-  );
-}
-
-// BlogCard Component
-function BlogCard({ post, index }: { post: typeof posts[0]; index: number }) {
-  return (
-    <Link href={`/blog/${post.slug}`} className="block group">
-      <Card className="bg-white/80 backdrop-blur-lg border border-gray-300 shadow-xl rounded-2xl overflow-hidden hover:shadow-2xl transition">
-        <img
-          src={post.image}
-          alt={post.title}
-          className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-
-        <CardHeader className="p-6 flex flex-col gap-2">
-          {/* Category Badge */}
-          <span className="self-start px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-blue-600 text-white shadow-md">
-            {post.category}
-          </span>
-
-          <h2 className="text-2xl font-semibold text-gray-900 group-hover:underline">
-            {post.title}
-          </h2>
-        </CardHeader>
-
-        <CardBody className="p-6 text-gray-700">
-          <p className="mb-4">{post.excerpt}</p>
-          <p className="text-sm text-gray-500">{post.date}</p>
-        </CardBody>
-      </Card>
-    </Link>
+    </section>
   );
 }

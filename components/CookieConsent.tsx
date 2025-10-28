@@ -1,162 +1,193 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    Checkbox,
-    Card,
-    CardBody,
-} from "@heroui/react";
+import { useEffect, useState } from "react";
+import { Button, Switch } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings } from "lucide-react";
 
 export default function CookieConsent() {
-    const [showBanner, setShowBanner] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [showSettingsBtn, setShowSettingsBtn] = useState(true);
-    const [preferences, setPreferences] = useState({
-        necessary: true,
-        performance: false,
-        marketing: false,
-        functional: false,
-    });
+    const [visible, setVisible] = useState(false);
+    const [showPrefs, setShowPrefs] = useState(false);
+    const [analytics, setAnalytics] = useState(true);
+    const [marketing, setMarketing] = useState(false);
+
+    const BRAND_COLOR = "#0057b7"; // 💙 Replace with your brand’s primary color
 
     useEffect(() => {
-        const stored = localStorage.getItem("cookiePrefs");
-        if (!stored) {
-            setShowBanner(true);
-        } else {
-            setPreferences(JSON.parse(stored));
+        const consent = localStorage.getItem("cookieConsent");
+        if (!consent) {
+            const timer = setTimeout(() => setVisible(true), 1200);
+            return () => clearTimeout(timer);
         }
-
-        // Hide settings button after 3 seconds
-        const timer = setTimeout(() => setShowSettingsBtn(false), 3000);
-        return () => clearTimeout(timer);
     }, []);
 
-    const savePreferences = () => {
-        localStorage.setItem("cookiePrefs", JSON.stringify(preferences));
-        setShowBanner(false);
-        setShowModal(false);
+    const handleAcceptAll = () => {
+        localStorage.setItem("cookieConsent", JSON.stringify({ analytics: true, marketing: true }));
+        setVisible(false);
+    };
+
+    const handleDecline = () => {
+        localStorage.setItem("cookieConsent", JSON.stringify({ analytics: false, marketing: false }));
+        setVisible(false);
+    };
+
+    const handleSavePreferences = () => {
+        localStorage.setItem("cookieConsent", JSON.stringify({ analytics, marketing }));
+        setVisible(false);
     };
 
     return (
-        <>
-            {/* 🔹 Banner */}
-            <AnimatePresence>
-                {showBanner && (
-                    <motion.div
-                        initial={{ y: 100, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: 100, opacity: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className="fixed bottom-4 inset-x-4 z-50"
+        <AnimatePresence>
+            {visible && (
+                <motion.div
+                    initial={{ x: "-100%", opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: "-100%", opacity: 0 }}
+                    transition={{ duration: 0.7, ease: "easeOut" }}
+                    className="fixed bottom-0 left-0 right-0 z-[9999]"
+                >
+                    <div
+                        className="backdrop-blur-md shadow-xl border-t-4 p-5 md:p-6"
+                        style={{
+                            borderColor: BRAND_COLOR,
+                            background:
+                                "linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.92) 100%)",
+                        }}
                     >
-                        <Card className="bg-gradient-to-r from-primary to-danger text-white shadow-2xl rounded-2xl border border-white/20">
-                            <CardBody className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-6">
-                                <p className="text-base max-w-2xl">
-                                    We use cookies to improve your browsing experience, personalize
-                                    content, and analyze our traffic. You can accept all cookies or
-                                    manage your preferences.
-                                </p>
-                                <div className="flex gap-3 shrink-0">
-                                    <Button
-                                        color="danger"
-                                        onPress={() => setShowModal(true)}
-                                        className="rounded-xl shadow-lg bg-white text-danger font-semibold"
-                                    >
-                                        Manage Preferences
-                                    </Button>
-                                    <Button
-                                        color="primary"
-                                        onPress={savePreferences}
-                                        className="rounded-xl shadow-lg bg-white text-primary font-semibold"
-                                    >
-                                        Accept All
-                                    </Button>
+                        <div className="mx-auto max-w-6xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div className="text-sm md:text-base text-neutral-800 dark:text-neutral-100 leading-relaxed">
+                                <span className="font-semibold text-[15px]" style={{ color: BRAND_COLOR }}>
+                                    We respect your privacy.
+                                </span>{" "}
+                                We use cookies to personalize content, enhance your experience, and analyze traffic.
+                                You can manage your preferences or accept all cookies below.
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3 justify-center md:justify-end">
+                                <Button
+                                    size="sm"
+                                    variant="flat"
+                                    onPress={() => setShowPrefs(!showPrefs)}
+                                    style={{
+                                        color: BRAND_COLOR,
+                                        borderColor: BRAND_COLOR,
+                                    }}
+                                    className="border-2 font-medium hover:brightness-110 transition-all"
+                                >
+                                    Manage Preferences
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onPress={handleDecline}
+                                    className="text-neutral-700 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                                >
+                                    Decline
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    onPress={handleAcceptAll}
+                                    style={{
+                                        backgroundColor: BRAND_COLOR,
+                                        color: "white",
+                                        boxShadow: `0 0 15px ${BRAND_COLOR}50`,
+                                    }}
+                                    className="font-semibold hover:opacity-90 transition-all"
+                                >
+                                    Accept All
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Preferences Panel */}
+                    <AnimatePresence>
+                        {showPrefs && (
+                            <motion.div
+                                initial={{ y: "100%", opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: "100%", opacity: 0 }}
+                                transition={{ duration: 0.6, ease: "easeOut" }}
+                                className="fixed bottom-0 left-0 right-0 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 md:p-8 z-[10000]"
+                            >
+                                <div className="mx-auto max-w-4xl">
+                                    <h3 className="text-lg font-semibold mb-4" style={{ color: BRAND_COLOR }}>
+                                        Cookie Preferences
+                                    </h3>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium text-neutral-800 dark:text-neutral-100">
+                                                    Essential Cookies
+                                                </p>
+                                                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                                    Required for basic website functionality.
+                                                </p>
+                                            </div>
+                                            <Switch isSelected isDisabled />
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium text-neutral-800 dark:text-neutral-100">
+                                                    Analytics Cookies
+                                                </p>
+                                                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                                    Help us understand how our site is used.
+                                                </p>
+                                            </div>
+                                            <Switch
+                                                isSelected={analytics}
+                                                onValueChange={setAnalytics}
+                                                color="primary"
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium text-neutral-800 dark:text-neutral-100">
+                                                    Marketing Cookies
+                                                </p>
+                                                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                                    Used for personalized ads and content.
+                                                </p>
+                                            </div>
+                                            <Switch
+                                                isSelected={marketing}
+                                                onValueChange={setMarketing}
+                                                color="secondary"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-end mt-6 gap-3">
+                                        <Button
+                                            variant="ghost"
+                                            onPress={() => setShowPrefs(false)}
+                                            className="text-neutral-700 dark:text-neutral-200"
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            onPress={handleSavePreferences}
+                                            style={{
+                                                backgroundColor: BRAND_COLOR,
+                                                color: "white",
+                                                boxShadow: `0 0 15px ${BRAND_COLOR}50`,
+                                            }}
+                                            className="font-semibold hover:opacity-90 transition-all"
+                                        >
+                                            Save Preferences
+                                        </Button>
+                                    </div>
                                 </div>
-                            </CardBody>
-                        </Card>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* ⚙️ Floating Settings Button (bottom-left) */}
-            <AnimatePresence>
-                {showSettingsBtn && (
-                    <motion.button
-                        onClick={() => setShowModal(true)}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.5 }}
-                        className="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-gradient-to-r from-primary to-danger text-white shadow-xl border border-white/20"
-                    >
-                        <Settings className="w-6 h-6" />
-                    </motion.button>
-                )}
-            </AnimatePresence>
-
-            {/* 🔹 Preferences Modal */}
-            <Modal isOpen={showModal} onOpenChange={setShowModal} size="lg">
-                <ModalContent className="bg-white rounded-2xl shadow-2xl">
-                    <ModalHeader className="text-2xl font-bold text-primary">
-                        Cookie Preferences
-                    </ModalHeader>
-                    <ModalBody className="space-y-4 text-gray-700">
-                        <Checkbox
-                            isSelected={preferences.necessary}
-                            isDisabled
-                            className="text-danger"
-                        >
-                            Strictly Necessary Cookies (Always Active)
-                        </Checkbox>
-                        <Checkbox
-                            isSelected={preferences.performance}
-                            onValueChange={(val) =>
-                                setPreferences((p) => ({ ...p, performance: val }))
-                            }
-                        >
-                            Performance Cookies
-                        </Checkbox>
-                        <Checkbox
-                            isSelected={preferences.functional}
-                            onValueChange={(val) =>
-                                setPreferences((p) => ({ ...p, functional: val }))
-                            }
-                        >
-                            Functional Cookies
-                        </Checkbox>
-                        <Checkbox
-                            isSelected={preferences.marketing}
-                            onValueChange={(val) =>
-                                setPreferences((p) => ({ ...p, marketing: val }))
-                            }
-                        >
-                            Marketing Cookies
-                        </Checkbox>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button
-                            color="danger"
-                            variant="light"
-                            onPress={() => setShowModal(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button color="primary" onPress={savePreferences}>
-                            Save Preferences
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

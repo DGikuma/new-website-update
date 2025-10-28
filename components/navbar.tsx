@@ -199,10 +199,15 @@ export const Navbar = () => {
   const searchInput = (
     <Input
       aria-label="Search"
-      classNames={{ inputWrapper: "bg-default-100", input: "text-sm" }}
+      classNames={{
+        inputWrapper: "bg-default-100",
+        input: "text-sm placeholder:text-primary font-semibold",
+      }}
       labelPlacement="outside"
       placeholder="Search..."
-      startContent={<SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />}
+      startContent={
+        <SearchIcon className="text-base text-primary font-semibold pointer-events-none flex-shrink-0" />
+      }
       type="search"
     />
   );
@@ -210,86 +215,193 @@ export const Navbar = () => {
   const retrieveInput = (
     <Input
       aria-label="Retrieve"
-      classNames={{ inputWrapper: "bg-default-100", input: "text-sm" }}
+      classNames={{
+        inputWrapper: "bg-default-100",
+        input: "text-sm placeholder:text-primary font-semibold",
+      }}
       placeholder="Retrieve Policy / ID..."
       type="text"
     />
   );
 
+
   const megaMenus = {
     Services: [
       {
-        title: "Health & Life",
+        title: "Evacuation & Repatriation",
         links: [
-          { label: "Health Insurance", href: "/services/health" },
-          { label: "Life Insurance", href: "/services/life" },
-          { label: "Travel Insurance", href: "/services/travel" },
+          { label: "Emergency Medical Evacuation", href: "/services/evacuation_and_repatriation/emergency" },
+          { label: "Repatriation of Remains", href: "/services/evacuation_and_repatriation/repatriation" },
+          { label: "Air Ambulance Support", href: "/services/evacuation_and_repatriation/air-ambulance" },
         ],
       },
       {
-        title: "Property & Business",
+        title: "Last Expense",
         links: [
-          { label: "Property Insurance", href: "/services/property" },
-          { label: "Business Insurance", href: "/services/business" },
-          { label: "Auto Insurance", href: "/services/auto" },
+          { label: "Funeral Expense Cover", href: "/services/last_expense/funeral" },
+          { label: "Family Support Cover", href: "/services/last_expense/family-support" },
+          { label: "Corporate Group Last Expense", href: "/services/last_expense/group" },
         ],
       },
       {
-        title: "Financial & Education",
+        title: "Medical Insurance",
         links: [
-          { label: "Education Insurance", href: "/services/education" },
-          { label: "Retirement Plans", href: "/services/retirement" },
-          { label: "Other Plans", href: "/services/other" },
+          { label: "Individual Medical Plans", href: "/services/medical/individual" },
+          { label: "Family Medical Cover", href: "/services/medical/family" },
+          { label: "Corporate & SME Plans", href: "/services/medical/corporate" },
         ],
       },
       {
-        title: "Local Forms",
+        title: "Hospital Cash",
         links: [
-          { label: "Education Insurance", href: "/services/education" },
-          { label: "Retirement Plans", href: "/services/retirement" },
-          { label: "Other Plans", href: "/services/other" },
+          { label: "Daily Hospital Benefit", href: "/services/hospital_cash/daily" },
+          { label: "Extended Stay Benefit", href: "/services/hospital_cash/extended" },
+          { label: "Accident Hospitalization", href: "/services/hospital_cash/accident" },
         ],
       },
       {
-        title: "Diaspora Forms",
+        title: "Personal Accident",
         links: [
-          { label: "Education Insurance", href: "/services/education" },
-          { label: "Retirement Plans", href: "/services/retirement" },
-          { label: "Other Plans", href: "/services/other" },
+          { label: "Individual Accident Cover", href: "/services/personal_accident/individual" },
+          { label: "Family Accident Cover", href: "/services/personal_accident/family" },
+          { label: "Corporate Accident Cover", href: "/services/personal_accident/corporate" },
         ],
       },
       {
-        title: "Downloads & Resources",
+        title: "BodaBoda Welfare Cover",
         links: [
-          { label: "Education Insurance", href: "/services/education" },
-          { label: "Retirement Plans", href: "/services/retirement" },
-          { label: "Other Plans", href: "/services/other" },
+          { label: "Rider Medical Cover", href: "/services/bodaboda_welfare/medical" },
+          { label: "Accident & Injury Cover", href: "/services/bodaboda_welfare/accident" },
+          { label: "Funeral & Repatriation", href: "/services/bodaboda_welfare/funeral" },
+        ],
+      },
+      {
+        title: "TukTuk Welfare Cover",
+        links: [
+          { label: "Driver & Passenger Cover", href: "/services/tuktuk_welfare/driver-passenger" },
+          { label: "Accident & Property Damage", href: "/services/tuktuk_welfare/accident" },
+          { label: "Medical & Last Expense", href: "/services/tuktuk_welfare/medical" },
+        ],
+      },
+      {
+        title: "Probation Guard",
+        links: [
+          { label: "Job Risk Protection", href: "/services/probation/job-protection" },
+          { label: "Medical & Injury Cover", href: "/services/probation/medical" },
+          { label: "Life & Accident Benefits", href: "/services/probation/life-benefits" },
+        ],
+      },
+      {
+        title: "AQUABIMA Insurance",
+        links: [
+          { label: "Fishermen Welfare Cover", href: "/services/aquabima/fishermen" },
+          { label: "Marine Accident Cover", href: "/services/aquabima/marine" },
+          { label: "Fishing Equipment Protection", href: "/services/aquabima/equipment" },
         ],
       },
     ],
     Products: [
       {
-        title: "Health & Life",
+        title: "Evacuation & Repatriation",
         links: [
-          { label: "Health Insurance", href: "/products/health" },
-          { label: "Life Insurance", href: "/products/life" },
-          { label: "Travel Insurance", href: "/products/travel" },
+          { label: "Overview", href: "/product/evacuation-repatriation" },
+          { label: "Benefits & Coverage", href: "/products/evacuation_and_repatriation" },
+          { label: "Eligibility & Requirements", href: "/product/evacuation-repatriation/eligibility" },
+          { label: "How It Works", href: "/product/evacuation-repatriation/how-it-works" },
+          { label: "Get a Quote", href: "/product/evacuation-repatriation/quote" },
+          { label: "FAQs", href: "/product/evacuation-repatriation/faqs" },
         ],
       },
       {
-        title: "Property & Business",
+        title: "Last Expense",
         links: [
-          { label: "Property Insurance", href: "/products/property" },
-          { label: "Business Insurance", href: "/products/business" },
-          { label: "Auto Insurance", href: "/products/auto" },
+          { label: "Overview", href: "/product/last-expense" },
+          { label: "Benefits & Premiums", href: "/products/last_expense" },
+          { label: "Family Cover Options", href: "/product/last-expense/family-options" },
+          { label: "Claim Process", href: "/product/last-expense/claims" },
+          { label: "Policy Terms", href: "/product/last-expense/policy-terms" },
+          { label: "Enroll Now", href: "/product/last-expense/enroll" },
         ],
       },
       {
-        title: "Financial & Education",
+        title: "Medical Insurance",
         links: [
-          { label: "Education Insurance", href: "/products/education" },
-          { label: "Retirement Plans", href: "/products/retirement" },
-          { label: "Other Plans", href: "/products/other" },
+          { label: "Individual Plans", href: "/product/medical-insurance/individual" },
+          { label: "Benefits & Premiums", href: "/products/medical" },
+          { label: "Family Plans", href: "/product/medical-insurance/family" },
+          { label: "Corporate Packages", href: "/product/medical-insurance/corporate" },
+          { label: "Hospitals Network", href: "/product/medical-insurance/hospitals" },
+          { label: "Claims & Reimbursements", href: "/product/medical-insurance/claims" },
+          { label: "Request a Quote", href: "/product/medical-insurance/quote" },
+        ],
+      },
+      {
+        title: "Hospital Cash",
+        links: [
+          { label: "How It Works", href: "/product/hospital-cash/how-it-works" },
+          { label: "Benefits & Premiums", href: "/products/hospital_cash" },
+          { label: "Daily Benefit Details", href: "/product/hospital-cash/details" },
+          { label: "Eligibility", href: "/product/hospital-cash/eligibility" },
+          { label: "Claim Procedure", href: "/product/hospital-cash/claims" },
+          { label: "Pricing Plans", href: "/product/hospital-cash/pricing" },
+          { label: "FAQs", href: "/product/hospital-cash/faqs" },
+        ],
+      },
+      {
+        title: "Personal Accident",
+        links: [
+          { label: "Coverage Summary", href: "/product/personal-accident/coverage" },
+          { label: "Benefits & Compensation", href: "/products/personal_accident" },
+          { label: "Exclusions", href: "/product/personal-accident/exclusions" },
+          { label: "Claim Steps", href: "/product/personal-accident/claims" },
+          { label: "Get Covered", href: "/product/personal-accident/enroll" },
+          { label: "FAQs", href: "/product/personal-accident/faqs" },
+        ],
+      },
+      {
+        title: "BodaBoda Welfare Cover",
+        links: [
+          { label: "What’s Covered", href: "/product/bodaboda-welfare/coverage" },
+          { label: "Accident & Hospitalization Benefits", href: "/products/bodaboda_welfare" },
+          { label: "Member Requirements", href: "/product/bodaboda-welfare/requirements" },
+          { label: "Premiums & Payments", href: "/product/bodaboda-welfare/premiums" },
+          { label: "Join Now", href: "/product/bodaboda-welfare/enroll" },
+          { label: "FAQs", href: "/product/bodaboda-welfare/faqs" },
+        ],
+      },
+      {
+        title: "TukTuk Welfare Cover",
+        links: [
+          { label: "Cover Overview", href: "/product/tuktuk-welfare" },
+          { label: "Driver & Passenger Benefits", href: "/products/tuktuk_welfare" },
+          { label: "Claim Guide", href: "/product/tuktuk-welfare/claims" },
+          { label: "Membership Options", href: "/product/tuktuk-welfare/membership" },
+          { label: "Apply Today", href: "/product/tuktuk-welfare/apply" },
+          { label: "FAQs", href: "/product/tuktuk-welfare/faqs" },
+        ],
+      },
+      {
+        title: "Probation Guard",
+        links: [
+          { label: "What is Probation Guard?", href: "/product/probation-guard" },
+          { label: "Benefits & Premiums", href: "/products/probation_guard" },
+          { label: "Coverage Details", href: "/product/probation-guard/coverage" },
+          { label: "Eligibility", href: "/product/probation-guard/eligibility" },
+          { label: "Claims & Support", href: "/product/probation-guard/claims" },
+          { label: "Policy Terms", href: "/product/probation-guard/policy-terms" },
+          { label: "Get a Quote", href: "/product/probation-guard/quote" },
+        ],
+      },
+      {
+        title: "AQUABIMA Insurance",
+        links: [
+          { label: "About AQUABIMA", href: "/product/aquabima" },
+          { label: "Benefits & Premiums", href: "/products/aquaculture" },
+          { label: "Fishermen Cover Details", href: "/product/aquabima/details" },
+          { label: "Accident & Death Benefits", href: "/product/aquabima/benefits" },
+          { label: "Premium Plans", href: "/product/aquabima/premiums" },
+          { label: "Claim Process", href: "/product/aquabima/claims" },
+          { label: "Enroll Now", href: "/product/aquabima/enroll" },
         ],
       },
     ],
@@ -297,25 +409,27 @@ export const Navbar = () => {
       {
         title: "File a Claim",
         links: [
-          { label: "Health Claims", href: "/claims/health" },
-          { label: "Life Claims", href: "/claims/life" },
-          { label: "Property Claims", href: "/claims/property" },
+          { label: "Evacuation & Repartriation Claims", href: "/Claims/EvacuationRepatriationClaimForm" },
+          { label: "Hospital Cash Claims", href: "/Claims/HospitalCashClaimForm" },
+          { label: "Personal Accident Claims", href: "/Claims/PersonalAccidentClaimForm" },
+          { label: "Medical Claims", href: "/Claims/MedicalClaimForm" },
+          { label: "Last Expense Claims", href: "/Claims/LastExpenseClaimForm" },
         ],
       },
       {
         title: "Support",
         links: [
-          { label: "Claims Process", href: "/claims/process" },
-          { label: "FAQs", href: "/claims/faqs" },
-          { label: "Contact Support", href: "/claims/contact" },
+          { label: "Claims Process", href: "/Claims/process" },
+          { label: "FAQs", href: "/Claims/faqs" },
+          { label: "Contact Support", href: "/Claims/contact" },
         ],
       },
       {
         title: "Resources",
         links: [
-          { label: "Download Forms", href: "/claims/forms" },
-          { label: "Policy Information", href: "/claims/policy-info" },
-          { label: "Customer Stories", href: "/claims/stories" },
+          { label: "Download Forms", href: "/Claims/forms" },
+          { label: "Policy Information", href: "/Claims/policy-info" },
+          { label: "Customer Stories", href: "/Claims/stories" },
         ],
       },
     ],
@@ -381,7 +495,7 @@ export const Navbar = () => {
       {
         title: "Resources", links: [
           { label: "Blog", href: "/blog" },
-          { label: "Newsroom", href: "/newsroom" },
+          { label: "Newsroom", href: "/media/news" },
           { label: "FAQs", href: "/faqs" },
         ],
       },
@@ -554,7 +668,7 @@ export const Navbar = () => {
                         >
                           {item.megaItems.map((col, idx) => (
                             <div key={idx} className="flex flex-col gap-2">
-                              <h4 className="font-semibold text-primary">{col.title}</h4>
+                              <h4 className="font-extrabold text-danger">{col.title}</h4>
                               {col.links.map((link) => (
                                 <Link
                                   key={link.href}
@@ -579,8 +693,14 @@ export const Navbar = () => {
 
         {/* Right side (search + retrieve + theme) visible md+ */}
         <NavbarContent className="hidden md:flex basis-1/5 md:basis-full" justify="end">
-          <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-          <NavbarItem className="hidden lg:flex">{retrieveInput}</NavbarItem>
+          <NavbarItem className="hidden lg:flex font-semibold text-primary">
+            {searchInput}
+          </NavbarItem>
+
+          <NavbarItem className="hidden lg:flex font-semibold text-primary">
+            {retrieveInput}
+          </NavbarItem>
+
           <NavbarItem className="hidden md:flex gap-2">
             <ThemeSwitch />
           </NavbarItem>

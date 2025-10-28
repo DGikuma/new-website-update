@@ -15,7 +15,8 @@ import {
     Textarea,
 } from "@heroui/react";
 import { motion } from "framer-motion";
-import { Mail, Phone, Linkedin, Twitter, Download } from "lucide-react";
+import { Mail, Phone, Linkedin, Twitter, Facebook, Youtube, Instagram, Download, MessageSquare } from "lucide-react";
+import { TikTokColourIcon } from "../../../components/icons/TikTokColourIcon";
 
 export default function MediaEnquiryCard() {
     const [open, setOpen] = useState(false);
@@ -49,49 +50,38 @@ export default function MediaEnquiryCard() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="w-full max-w-3xl mx-auto relative group"
+                className="w-full max-w-4xl mx-auto"
             >
-                {/* Animated border sweep */}
-                <motion.div
-                    className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary via-red-500 to-primary opacity-70 blur-sm"
-                    animate={{
-                        backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                    }}
-                    transition={{
-                        duration: 6,
-                        repeat: Infinity,
-                        ease: "linear",
-                    }}
-                />
-
-                <Card className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl shadow-xl">
+                <Card className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-gray-900 shadow-lg transition-colors duration-300">
                     {/* Header */}
-                    <CardHeader className="flex flex-col sm:flex-row items-center sm:items-start justify-between bg-gradient-to-r from-primary to-red-600 text-white px-6 py-8 rounded-t-3xl">
+                    <CardHeader className="flex flex-col sm:flex-row items-center sm:items-start justify-between px-6 py-6 border-b border-gray-200 dark:border-white/10">
                         <div className="flex items-center gap-4">
                             <img
                                 src="/media-relations.jpg"
                                 alt="Media Relations"
-                                className="w-16 h-16 rounded-2xl object-cover border-2 border-white/20"
+                                className="w-16 h-16 rounded-xl object-cover border border-gray-200 dark:border-white/20"
                             />
                             <div>
-                                <h3 className="text-2xl font-bold">Media & Press Enquiries</h3>
-                                <p className="text-sm opacity-80 mt-1">
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    Media & Press Enquiries
+                                </h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                     Speak directly with our Media Relations Officer
                                 </p>
                             </div>
                         </div>
 
                         {/* Quick contact */}
-                        <div className="flex flex-col gap-2 mt-4 sm:mt-0 text-sm text-white/90">
+                        <div className="flex flex-col gap-1 mt-4 sm:mt-0 text-sm">
                             <a
                                 href="mailto:media@birdviewinsurance.com"
-                                className="inline-flex items-center gap-2 hover:underline"
+                                className="inline-flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary"
                             >
                                 <Mail className="w-4 h-4" /> media@birdviewinsurance.com
                             </a>
                             <a
                                 href="tel:+254112072445"
-                                className="inline-flex items-center gap-2 hover:underline"
+                                className="inline-flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary"
                             >
                                 <Phone className="w-4 h-4" /> +254 112 072 445
                             </a>
@@ -99,105 +89,138 @@ export default function MediaEnquiryCard() {
                     </CardHeader>
 
                     {/* Body */}
-                    <CardBody className="px-6 py-6 grid md:grid-cols-2 gap-6">
+                    <CardBody className="px-6 py-6 grid md:grid-cols-2 gap-8">
                         {/* Left: Description */}
-                        <div>
-                            <h4 className="text-xl font-semibold text-white">
-                                Need press materials or an interview?
-                            </h4>
-                            <p className="mt-2 text-gray-300 text-sm leading-relaxed">
-                                Birdview Insurance’s Marketing & Communications team provides
-                                resources for journalists, partners, and collaborators — from
-                                our latest press kits to interview scheduling.
-                            </p>
+                        <div className="flex flex-col justify-between">
+                            <div>
+                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                    Need press materials or an interview?
+                                </h4>
+                                <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                    Birdview Insurance’s Marketing & Communications team provides
+                                    resources for journalists, partners, and collaborators — from
+                                    press kits to interview scheduling. We ensure timely responses
+                                    and accurate corporate insights.
+                                </p>
 
-                            <div className="flex items-center gap-4 mt-5">
-                                <motion.button
-                                    initial="rest"
-                                    whileHover="hover"
-                                    animate="rest"
-                                    onClick={() => setOpen(true)}
-                                    className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-6 py-2.5 font-semibold transition-colors duration-300 hover:bg-red-600 focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                                >
-                                    <span>Request Interview</span>
-                                    <motion.span
-                                        variants={{ rest: { x: 0 }, hover: { x: 8 } }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                <div className="flex flex-wrap items-center gap-4 mt-6">
+                                    <motion.button
+                                        onClick={() => setOpen(true)}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.97 }}
+                                        className="group inline-flex items-center gap-2 rounded-full bg-blue-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-blue-500 shadow-md hover:shadow-blue-500/30 transition-all duration-300"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={2}
+                                        <motion.div
+                                            whileHover={{ rotate: -10, x: 4 }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M9 5l7 7-7 7"
-                                            />
-                                        </svg>
-                                    </motion.span>
-                                </motion.button>
-
-                                <a
-                                    href="/assets/press-kit.zip"
-                                    download
-                                    className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-white text-sm hover:bg-white/10 transition"
-                                >
-                                    <Download className="w-4 h-4" />
-                                    Download Kit
-                                </a>
+                                            <MessageSquare className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
+                                        </motion.div>
+                                        <span className="group-hover:translate-x-1 transition-transform duration-300">
+                                            Request Interview
+                                        </span>
+                                    </motion.button>
+                                    <a
+                                        href="/assets/press-kit.zip"
+                                        download
+                                        className="group inline-flex items-center gap-2 rounded-full bg-red-600 text-white px-5 py-2.5 text-sm font-medium border border-transparent hover:bg-red-700 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all duration-300"
+                                    >
+                                        <motion.div
+                                            whileHover={{ x: 4 }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                                        >
+                                            <Download className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
+                                        </motion.div>
+                                        <span className="group-hover:translate-x-1 transition-transform duration-300">
+                                            Download Press Kit
+                                        </span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
 
                         {/* Right: Contact / Social */}
-                        <div className="bg-white/5 rounded-2xl p-4 flex flex-col justify-between">
+                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-5 flex flex-col justify-between">
                             <div>
-                                <h5 className="font-semibold text-white mb-3">
+                                <h5 className="font-semibold text-gray-900 dark:text-white mb-2">
                                     Media Contact
                                 </h5>
-                                <p className="text-white/90 font-medium">
+                                <p className="text-gray-800 dark:text-gray-200 font-medium">
                                     Jane Mwangi, Head of Media Relations
                                 </p>
-                                <p className="text-gray-400 text-sm mt-1">
+                                <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
                                     For all press & corporate communications
                                 </p>
 
                                 <div className="flex gap-3 mt-4">
                                     <a
-                                        href="https://www.linkedin.com"
+                                        href="https://www.linkedin.com/in/birdview-insurance-71b32431a"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
+                                        className="p-2 rounded-full border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition"
                                         title="LinkedIn"
                                     >
-                                        <Linkedin className="w-5 h-5 text-white" />
-                                        <a
-                                            href="https://twitter.com"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
-                                            title="Twitter"
-                                        >
-                                            <Twitter className="w-5 h-5 text-white" />
-                                        </a>
+                                        <Linkedin className="w-5 h-5 text-gray-700 dark:text-white" />
+                                    </a>
+                                    <a
+                                        href="https://x.com/BirdviewInsur?t=oTQd4bz-Tlhpb9OXuEgf2g&s=08"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 rounded-full border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                                        title="Twitter"
+                                    >
+                                        <Twitter className="w-5 h-5 text-gray-700 dark:text-white" />
+                                    </a>
+                                    <a
+                                        href="https://www.facebook.com/share/17HhNv62FW/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 rounded-full border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                                        title="Facebook"
+                                    >
+                                        <Facebook className="w-5 h-5 text-gray-700 dark:text-white" />
+                                    </a>
+                                    <a
+                                        href="https://www.tiktok.com/@birdview.insurance"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 rounded-full border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                                        title="TikTok"
+                                    >
+                                        <TikTokColourIcon className="w-5 h-5 text-gray-700 dark:text-white" />
+                                    </a>
+                                    <a
+                                        href="https://www.youtube.com/@BirdviewInsurance"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 rounded-full border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                                        title="YouTube"
+                                    >
+                                        <Youtube className="w-5 h-5 text-gray-700 dark:text-white" />
+                                    </a>
+                                    <a
+                                        href="https://www.instagram.com/birdviewinsurance?igsh=bXN2bng0MjUwaGtp"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 rounded-full border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                                        title="Instagram"
+                                    >
+                                        <Instagram className="w-5 h-5 text-gray-700 dark:text-white" />
                                     </a>
                                 </div>
                             </div>
 
-                            <div className="mt-6 text-xs text-gray-400">
+                            <div className="mt-6 text-xs text-gray-500 dark:text-gray-400">
                                 © {new Date().getFullYear()} Birdview Microinsurance Marketing Dept.
                             </div>
                         </div>
                     </CardBody>
 
-                    <CardFooter className="px-6 py-4 border-t border-white/10 text-gray-300 text-sm flex justify-between items-center">
+                    <CardFooter className="px-6 py-4 border-t border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 text-sm flex justify-between items-center">
                         <span>Birdview Corporate Communications</span>
                         <a
                             href="/privacy"
-                            className="hover:text-white hover:underline transition"
+                            className="hover:text-primary transition font-medium"
                         >
                             Privacy Policy
                         </a>
@@ -247,10 +270,12 @@ export default function MediaEnquiryCard() {
                                 onChange={handleChange}
                             />
                             <div className="flex justify-end gap-2 mt-3">
-                                <Button variant="ghost" onClick={() => setOpen(false)}>
+                                <Button variant="ghost" color="danger" onPress={() => setOpen(false)}>
                                     Cancel
                                 </Button>
-                                <Button type="submit">Send</Button>
+                                <Button color="primary" type="submit text-white bg-blue-600 hover:bg-blue-500">
+                                    Send
+                                </Button>
                             </div>
                         </form>
                     </ModalBody>

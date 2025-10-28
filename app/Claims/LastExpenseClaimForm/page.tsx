@@ -13,6 +13,7 @@ import {
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUp } from "lucide-react";
+import Image from "next/image";
 
 export interface FormdataType {
     [key: string]: any;
@@ -101,7 +102,6 @@ export default function LastExpenseClaimForm() {
              bg-[url('/images/backdrop2.png')] bg-cover bg-center bg-no-repeat"
         >
             <Card className="w-full max-w-3xl shadow-xl rounded-2xl bg-white">
-                <Image src="/images/logo.jpeg" alt="Logo" width={150} height={44} />
                 <CardBody className="p-8 space-y-8">
                     <div className="text-center space-y-1">
                         <h1 className="text-2xl font-bold text-primary">Birdview Insurance</h1>

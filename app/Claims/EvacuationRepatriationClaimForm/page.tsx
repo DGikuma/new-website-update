@@ -20,15 +20,6 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { UploadCloud, FileText, Trash2, DownloadCloud, Send, X } from "lucide-react";
 
-/**
- * Evacuation & Repatriation Claim Form
- * Rewritten using Hero UI components with a centered dark-glass toast (single).
- *
- * - Preserves original structure & validation (react-hook-form)
- * - File upload, signature capture, export to PDF, submit form logic retained
- * - Center-fade toast with dark frosted glass theme
- */
-
 export default function EvacuationRepatriationClaimForm() {
     // react-hook-form
     const {
@@ -195,7 +186,10 @@ export default function EvacuationRepatriationClaimForm() {
 
     return (
         <>
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 py-10 px-4">
+            <div
+                className="min-h-screen flex items-center justify-center px-4 
+             bg-[url('/images/backdrop2.png')] bg-cover bg-center bg-no-repeat"
+            >
                 <div className="max-w-[1200px] mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Left Info Panel */}

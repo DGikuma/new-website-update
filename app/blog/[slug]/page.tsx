@@ -1,4 +1,3 @@
-// app/blog/[slug]/page.tsx
 "use client";
 
 import { notFound, useParams } from "next/navigation";

@@ -6,16 +6,37 @@ import { motion } from "framer-motion";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-// ✅ HeroUI imports
-import { Card, CardBody } from "@heroui/react";
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { toast } from "@heroui/react";
+// ✅ HeroUI Imports
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Input,
+  Button,
+  Badge,
+  toast,
+} from "@heroui/react";
 
-// ✅ Your custom components
-import BackgroundImage from "../components/BackgroundImage";
-import AnimationDownToUp from "./components/Animation/AnimationDownToUp";
-import AnimationRightToLeft from "./components/Animation/AnimationRightToLeft";
+// ✅ Optional small motion wrappers
+const AnimationDownToUp: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    {children}
+  </motion.div>
+);
+
+const AnimationRightToLeft: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    initial={{ opacity: 0, x: 30 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    {children}
+  </motion.div>
+);
 
 export interface FormdataType {
   fullnames: string;
@@ -34,7 +55,7 @@ const RegForm: React.FC = () => {
   const [loaderIcon, setLoaderIcon] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
-  // ✅ HeroUI toast wrappers
+  // ✅ HeroUI Toast helpers
   const showSuccess = (message: string) =>
     toast({
       title: "Success",
@@ -54,32 +75,24 @@ const RegForm: React.FC = () => {
     });
 
   const handlePhoneChange = (value: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      mobileno: value,
-    }));
+    setFormData((prev) => ({ ...prev, mobileno: value }));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoaderIcon(true);
     setSubmitted(true);
 
     try {
-      const res = await axios.post(
-        "/api/registration-form",
-        formData,
-        { headers: { "Content-Type": "application/json" }, timeout: 10000 }
-      );
+      const res = await axios.post("/api/registration-form", formData, {
+        headers: { "Content-Type": "application/json" },
+        timeout: 10000,
+      });
 
       setFormData({ fullnames: "", mobileno: "", email: "", agencies: "" });
 
@@ -96,12 +109,22 @@ const RegForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 px-4 py-10">
-      <Card className="w-full max-w-3xl shadow-2xl border border-gray-100 rounded-3xl bg-white/95 backdrop-blur-md">
-        <CardBody className="relative p-0 overflow-hidden rounded-3xl">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 px-4 py-10">
+      <Card className="w-full max-w-3xl shadow-2xl rounded-2xl border border-slate-200 bg-white/95 backdrop-blur-md">
+        {/* ✅ Header with Corporate Feel */}
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-6 flex justify-between items-center rounded-t-2xl">
+          <div>
+            <h2 className="text-2xl font-semibold">Attendee Registration</h2>
+            <p className="text-blue-100 text-sm">High-end corporate registration form</p>
+          </div>
+          <Badge color="primary" variant="flat" className="uppercase">Premium</Badge>
+        </CardHeader>
+
+        {/* ✅ Card Body */}
+        <CardBody className="p-10 bg-white rounded-b-2xl">
           {/* ✅ Loader Overlay */}
           {loaderIcon && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-md">
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 rounded-2xl">
               <div className="flex space-x-2">
                 <div className="w-4 h-4 bg-blue-600 rounded-full animate-bounce" />
                 <div className="w-4 h-4 bg-indigo-600 rounded-full animate-bounce delay-150" />
@@ -110,122 +133,112 @@ const RegForm: React.FC = () => {
             </div>
           )}
 
-          {/* ✅ Top Background Section */}
-          <div className="relative h-56 overflow-hidden">
-            <BackgroundImage />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white" />
-          </div>
-
-          {/* ✅ Main Form Section */}
-          <div className="relative -mt-20 flex justify-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="bg-white w-full max-w-[90%] p-8 rounded-3xl shadow-2xl border border-gray-200 flex flex-col items-center"
-            >
-              <AnimationDownToUp>
-                <h2 className="text-3xl font-bold text-gray-900 text-center tracking-wide uppercase mb-2">
-                  Attendee Registration
-                </h2>
-                <p className="text-gray-500 text-center mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="w-full"
+          >
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Top Info */}
+              <div className="text-center mb-4">
+                <h3 className="text-2xl font-bold text-slate-800 uppercase tracking-wide">
+                  Event Attendance Form
+                </h3>
+                <p className="text-slate-500">
                   Please fill in your details accurately to complete registration.
                 </p>
-              </AnimationDownToUp>
+              </div>
 
-              <form
-                onSubmit={handleSubmit}
-                className="w-full space-y-8 transition-all duration-500"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <AnimationRightToLeft>
-                    <Input
-                      name="fullnames"
-                      label="Full Name"
-                      variant="bordered"
-                      value={formData.fullnames}
-                      onChange={handleChange}
-                      radius="lg"
-                      disabled={submitted}
-                      className="bg-gray-50"
-                      required
-                    />
-                  </AnimationRightToLeft>
-
-                  <AnimationDownToUp>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Phone Number
-                      </label>
-                      <PhoneInput
-                        country="ke"
-                        value={formData.mobileno}
-                        onChange={handlePhoneChange}
-                        inputStyle={{
-                          width: "100%",
-                          height: "52px",
-                          borderRadius: "10px",
-                          borderColor: "#ddd",
-                          fontSize: "15px",
-                        }}
-                        containerClass="w-full"
-                        disabled={submitted}
-                      />
-                    </div>
-                  </AnimationDownToUp>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <AnimationDownToUp>
-                    <Input
-                      name="email"
-                      label="Email Address"
-                      type="email"
-                      variant="bordered"
-                      value={formData.email}
-                      onChange={handleChange}
-                      radius="lg"
-                      disabled={submitted}
-                      required
-                    />
-                  </AnimationDownToUp>
-
-                  <AnimationRightToLeft>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Agency Representation
-                      </label>
-                      <textarea
-                        name="agencies"
-                        value={formData.agencies}
-                        onChange={handleChange}
-                        required
-                        disabled={submitted}
-                        rows={4}
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    </div>
-                  </AnimationRightToLeft>
-                </div>
-
-                {/* ✅ Submit Button */}
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="flex justify-center"
-                >
-                  <Button
-                    type="submit"
+              {/* Form Fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <AnimationRightToLeft>
+                  <Input
+                    name="fullnames"
+                    label="Full Name"
+                    variant="bordered"
+                    value={formData.fullnames}
+                    onChange={handleChange}
+                    radius="lg"
                     disabled={submitted}
-                    className={`relative px-10 py-5 text-lg font-semibold rounded-xl text-white shadow-lg bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-indigo-500/50 transition-all duration-300 ease-in-out ${submitted ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                  >
-                    {submitted ? "Submitted" : "Submit"}
-                  </Button>
-                </motion.div>
-              </form>
-            </motion.div>
-          </div>
+                    className="bg-slate-50"
+                    required
+                  />
+                </AnimationRightToLeft>
+
+                <AnimationDownToUp>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Phone Number
+                    </label>
+                    <PhoneInput
+                      country="ke"
+                      value={formData.mobileno}
+                      onChange={handlePhoneChange}
+                      inputStyle={{
+                        width: "100%",
+                        height: "52px",
+                        borderRadius: "10px",
+                        borderColor: "#ddd",
+                        fontSize: "15px",
+                      }}
+                      containerClass="w-full"
+                      disabled={submitted}
+                    />
+                  </div>
+                </AnimationDownToUp>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <AnimationDownToUp>
+                  <Input
+                    name="email"
+                    label="Email Address"
+                    type="email"
+                    variant="bordered"
+                    value={formData.email}
+                    onChange={handleChange}
+                    radius="lg"
+                    disabled={submitted}
+                    required
+                  />
+                </AnimationDownToUp>
+
+                <AnimationRightToLeft>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Agency Representation
+                    </label>
+                    <textarea
+                      name="agencies"
+                      value={formData.agencies}
+                      onChange={handleChange}
+                      required
+                      disabled={submitted}
+                      rows={4}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    />
+                  </div>
+                </AnimationRightToLeft>
+              </div>
+
+              {/* Submit Button */}
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex justify-center mt-6"
+              >
+                <Button
+                  type="submit"
+                  disabled={submitted}
+                  className={`relative px-10 py-5 text-lg font-semibold rounded-xl text-white shadow-lg bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 hover:shadow-blue-400/40 transition-all duration-300 ease-in-out ${submitted ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
+                >
+                  {submitted ? "Submitted" : "Submit"}
+                </Button>
+              </motion.div>
+            </form>
+          </motion.div>
         </CardBody>
       </Card>
     </div>

@@ -191,8 +191,8 @@ export default function RootLayout({
                   <h5 className="font-semibold text-lg mb-4">Resources</h5>
                   <div className="flex flex-col gap-3">
                     {[
-                      { href: "/blogs", label: "Blogs" },
-                      { href: "/news", label: "News" },
+                      { href: "/blog", label: "Blogs" },
+                      { href: "/media/news", label: "News" },
                       { href: "/faq", label: "FAQ" },
                       { href: "/downloads", label: "Downloads" },
                     ].map(({ href, label }) => (
@@ -230,7 +230,7 @@ export default function RootLayout({
                   {/* ✅ Social Media Links */}
                   {[
                     {
-                      href: "https://www.facebook.com/BirdviewInsurance/",
+                      href: "https://www.facebook.com/share/17HhNv62FW/",
                       label: "Facebook",
                       icon: (
                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
